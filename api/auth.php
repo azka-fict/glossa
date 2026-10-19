@@ -51,7 +51,8 @@ switch ($action) {
             echo json_encode([
                 'success' => true,
                 'message' => 'Login berhasil.',
-                'user' => current_user()
+                'user' => current_user(),
+                'csrf_token' => csrf_token()
             ]);
         }
         break;
@@ -78,7 +79,8 @@ switch ($action) {
             echo json_encode([
                 'success' => true,
                 'message' => 'Registrasi berhasil.',
-                'user' => current_user()
+                'user' => current_user(),
+                'csrf_token' => csrf_token()
             ]);
         }
         break;

@@ -1,6 +1,18 @@
 const GlossaApp = {
     csrfToken: '',
 
+    setMetaToken(token) {
+        if (!token) return;
+        this.csrfToken = token;
+        let meta = document.querySelector('meta[name="csrf-token"]');
+        if (!meta) {
+            meta = document.createElement('meta');
+            meta.name = 'csrf-token';
+            document.head.appendChild(meta);
+        }
+        meta.content = token;
+    },
+
     async getCsrfToken() {
         if (this.csrfToken) return this.csrfToken;
         const metaTag = document.querySelector('meta[name="csrf-token"]');
@@ -12,7 +24,7 @@ const GlossaApp = {
             const res = await fetch('api/auth.php?action=csrf');
             const data = await res.json();
             if (data.csrf_token) {
-                this.csrfToken = data.csrf_token;
+                this.setMetaToken(data.csrf_token);
                 return this.csrfToken;
             }
         } catch (e) {
@@ -26,7 +38,7 @@ const GlossaApp = {
             const res = await fetch('api/auth.php?action=me');
             const data = await res.json();
             if (data.csrf_token) {
-                this.csrfToken = data.csrf_token;
+                this.setMetaToken(data.csrf_token);
             }
             return data.authenticated ? data.user : null;
         } catch (e) {
@@ -88,6 +100,8 @@ const GlossaApp = {
         return user;
     }
 };
+
+window.GlossaApp = GlossaApp;
 
 document.addEventListener('DOMContentLoaded', () => {
     GlossaApp.initNavbar();

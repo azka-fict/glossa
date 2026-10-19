@@ -28,10 +28,13 @@ function csrf_field(): string {
     return '<input type="hidden" name="csrf_token" value="' . htmlspecialchars(csrf_token(), ENT_QUOTES, 'UTF-8') . '">';
 }
 
-function validate_csrf(): bool {
+function validate_csrf(?string $customToken = null): bool {
     $sessionToken = $_SESSION['csrf_token'] ?? '';
     if ($sessionToken === '') {
         return false;
+    }
+    if ($customToken !== null && $customToken !== '' && hash_equals($sessionToken, $customToken)) {
+        return true;
     }
     $postToken = $_POST['csrf_token'] ?? '';
     if ($postToken !== '' && hash_equals($sessionToken, $postToken)) {
@@ -45,6 +48,9 @@ function validate_csrf(): bool {
 }
 
 function client_ip(): string {
+    if (!empty($_SERVER['HTTP_CF_CONNECTING_IP'])) {
+        return $_SERVER['HTTP_CF_CONNECTING_IP'];
+    }
     return $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
 }
 
@@ -300,6 +306,9 @@ function login_user(PDO $pdo, string $email, string $password): ?string {
     $_SESSION['user_id'] = $user['id'];
     $_SESSION['user_name'] = $user['name'];
     $_SESSION['user_email'] = $user['email'];
+    if (empty($_SESSION['csrf_token'])) {
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    }
 
     return null;
 }

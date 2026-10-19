@@ -40,7 +40,8 @@ try {
         $pdo = new PDO($dsn, $user, $pass, $options);
         $pdo->exec("SET time_zone = '+07:00'");
     } else {
-        die("Koneksi database gagal: " . $e->getMessage());
+        error_log("Database connection failed: " . $e->getMessage());
+        die("Koneksi database bermasalah. Silakan hubungi administrator.");
     }
 }
 

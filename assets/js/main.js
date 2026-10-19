@@ -261,7 +261,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             try {
-                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+                let csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+                if (!csrfToken && window.GlossaApp && typeof window.GlossaApp.getCsrfToken === 'function') {
+                    csrfToken = await window.GlossaApp.getCsrfToken();
+                }
                 const response = await fetch('api/scan.php', {
                     method: 'POST',
                     headers: { 
@@ -351,6 +354,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 const res = await response.json();
                 if (res.success) {
+                    if (res.csrf_token && window.GlossaApp) {
+                        window.GlossaApp.setMetaToken(res.csrf_token);
+                    }
                     closeModal(authModal);
                     btnScan.dataset.auth = '1';
                     startCamera();
@@ -391,6 +397,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 const res = await response.json();
                 if (res.success) {
+                    if (res.csrf_token && window.GlossaApp) {
+                        window.GlossaApp.setMetaToken(res.csrf_token);
+                    }
                     closeModal(authModal);
                     btnScan.dataset.auth = '1';
                     startCamera();

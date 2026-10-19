@@ -18,8 +18,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $rawInput = file_get_contents('php://input');
 $data = json_decode($rawInput, true) ?? $_POST;
 
-$postToken = $data['csrf_token'] ?? '';
-if (!validate_csrf() && (!isset($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $postToken))) {
+$postToken = $data['csrf_token'] ?? ($_SERVER['HTTP_X_CSRF_TOKEN'] ?? '');
+if (!validate_csrf($postToken)) {
     http_response_code(403);
     echo json_encode(['success' => false, 'error' => 'Sesi tidak valid atau telah kedaluwarsa (CSRF). Silakan muat ulang halaman.']);
     exit;

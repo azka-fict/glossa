@@ -17,7 +17,7 @@ DirectoryIndex index.html index.php
 Options -Indexes
 
 # 2. Block direct web access to sensitive dotfiles and SQL dumps
-<FilesMatch "(^\.|\.sql$|\.log$|\.md$)">
+<FilesMatch "(^\.|\.sql$|\.log$|\.md$|\.env)">
     <IfModule mod_authz_core.c>
         Require all denied
     </IfModule>
@@ -26,6 +26,10 @@ Options -Indexes
         Deny from all
     </IfModule>
 </FilesMatch>
+
+<IfModule mod_rewrite.c>
+    RewriteRule ^(config|includes)/ - [F,L]
+</IfModule>
 
 # 3. Security HTTP Headers
 <IfModule mod_headers.c>
