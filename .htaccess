@@ -8,7 +8,7 @@ DirectoryIndex index.html index.php
 # 1. Automatic clean redirect from legacy .php to .html
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteBase /glossav1/
+    RewriteBase /
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^(.*)\.php$ $1.html [L,R=301]
 </IfModule>
