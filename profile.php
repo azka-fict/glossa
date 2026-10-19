@@ -85,20 +85,20 @@ require_once __DIR__ . '/includes/header.php';
 <div class="profile-wrapper">
     <div class="profile-card">
         <?php if (isset($_GET['success']) && $_GET['success'] === 'name_updated'): ?>
-            <div class="alert alert-success" style="margin-bottom: 1rem; padding: 0.6rem 0.85rem; font-size: 0.875rem;">Nama berhasil diperbarui!</div>
+            <div class="alert alert-success">Nama berhasil diperbarui!</div>
         <?php elseif (isset($_GET['success']) && $_GET['success'] === 'email_updated'): ?>
-            <div class="alert alert-success" style="margin-bottom: 1rem; padding: 0.6rem 0.85rem; font-size: 0.875rem;">Alamat email berhasil diperbarui!</div>
+            <div class="alert alert-success">Alamat email berhasil diperbarui!</div>
         <?php elseif (isset($_GET['success']) && $_GET['success'] === 'email_verified'): ?>
-            <div class="alert alert-success" style="margin-bottom: 1rem; padding: 0.6rem 0.85rem; font-size: 0.875rem;">Alamat email berhasil dikonfirmasi dan terverifikasi!</div>
+            <div class="alert alert-success">Alamat email berhasil dikonfirmasi dan terverifikasi!</div>
         <?php endif; ?>
         <?php if (!empty($nameError)): ?>
-            <div class="alert alert-error" style="margin-bottom: 1rem; padding: 0.6rem 0.85rem; font-size: 0.875rem;"><?= htmlspecialchars($nameError) ?></div>
+            <div class="alert alert-error"><?= htmlspecialchars($nameError) ?></div>
         <?php endif; ?>
         <?php if (!empty($emailError)): ?>
-            <div class="alert alert-error" style="margin-bottom: 1rem; padding: 0.6rem 0.85rem; font-size: 0.875rem;"><?= htmlspecialchars($emailError) ?></div>
+            <div class="alert alert-error"><?= htmlspecialchars($emailError) ?></div>
         <?php endif; ?>
         <?php if (!empty($verifyError)): ?>
-            <div class="alert alert-error" style="margin-bottom: 1rem; padding: 0.6rem 0.85rem; font-size: 0.875rem;"><?= htmlspecialchars($verifyError) ?></div>
+            <div class="alert alert-error"><?= htmlspecialchars($verifyError) ?></div>
         <?php endif; ?>
 
         <div class="profile-header">
@@ -135,7 +135,7 @@ require_once __DIR__ . '/includes/header.php';
         <div class="profile-details">
             <div class="detail-row">
                 <span class="detail-label">Nama Lengkap</span>
-                <div style="display: flex; align-items: center; gap: 0.6rem;">
+                <div class="detail-value-group">
                     <span class="detail-value"><?= htmlspecialchars($user['name']) ?></span>
                     <button type="button" class="btn-edit-inline" onclick="openEditNameModal()">
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -149,7 +149,7 @@ require_once __DIR__ . '/includes/header.php';
             <div class="detail-row detail-row-email">
                 <div class="email-header-line">
                     <span class="detail-label">Email</span>
-                    <div style="display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;">
+                    <div class="badge-group">
                         <?php if (!empty($user['email_verified_at'])): ?>
                             <span class="status-badge verified" title="Terverifikasi pada <?= date('d M Y, H:i', strtotime($user['email_verified_at'])) ?>">
                                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -306,7 +306,7 @@ require_once __DIR__ . '/includes/header.php';
                 <label for="new_name">Nama Lengkap</label>
                 <input type="text" id="new_name" name="new_name" value="<?= htmlspecialchars($user['name']) ?>" required minlength="2" maxlength="100">
             </div>
-            <div style="display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 0.75rem;">
+            <div class="actions-row actions-right" style="margin-top: 0.75rem;">
                 <button type="button" class="btn btn-secondary" onclick="closeEditNameModal()">Batal</button>
                 <button type="submit" name="update_name" class="btn btn-primary">Simpan Perubahan</button>
             </div>
@@ -327,7 +327,7 @@ require_once __DIR__ . '/includes/header.php';
                 <label for="new_email">Alamat Email Baru</label>
                 <input type="email" id="new_email" name="new_email" value="<?= htmlspecialchars($user['email']) ?>" required>
             </div>
-            <div style="display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 0.75rem;">
+            <div class="actions-row actions-right" style="margin-top: 0.75rem;">
                 <button type="button" class="btn btn-secondary" onclick="closeEditEmailModal()">Batal</button>
                 <button type="submit" name="update_email" class="btn btn-primary">Simpan Email</button>
             </div>
@@ -336,8 +336,8 @@ require_once __DIR__ . '/includes/header.php';
 </div>
 
 <div class="modal-overlay" id="verifyEmailModal" aria-hidden="true">
-    <div class="modal-card" style="max-width: 440px;">
-        <div style="display: flex; justify-content: flex-end; margin-bottom: -0.5rem;">
+    <div class="modal-card modal-sm">
+        <div class="modal-close-row">
             <button type="button" class="modal-close" onclick="closeVerifyEmailModal()" aria-label="Tutup">&times;</button>
         </div>
 
@@ -356,13 +356,13 @@ require_once __DIR__ . '/includes/header.php';
         </div>
 
         <?php if (isset($_GET['success']) && $_GET['success'] === 'code_sent'): ?>
-            <div class="alert alert-success" style="margin-bottom: 1.15rem; font-size: 0.85rem; text-align: center;">
+            <div class="alert alert-success text-center">
                 Kode verifikasi 6 digit telah dikirim! Silakan periksa inbox atau spam email Anda.
             </div>
         <?php endif; ?>
 
         <?php if (!empty($verifyError)): ?>
-            <div class="alert alert-error" style="margin-bottom: 1.15rem; font-size: 0.85rem; text-align: center;">
+            <div class="alert alert-error text-center">
                 <?= htmlspecialchars($verifyError) ?>
             </div>
         <?php endif; ?>
@@ -381,7 +381,7 @@ require_once __DIR__ . '/includes/header.php';
                 <p class="otp-hint">Masa aktif kode verifikasi: 15 menit</p>
             </div>
 
-            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.75rem; font-size: 0.95rem; font-weight: 600;">
+            <button type="submit" class="btn btn-primary btn-block">
                 Konfirmasi Sekarang
             </button>
         </form>
@@ -507,18 +507,18 @@ require_once __DIR__ . '/includes/header.php';
 </div>
 
 <div class="modal-overlay" id="deleteAccountModal" aria-hidden="true">
-    <div class="modal-card" style="max-width: 440px;">
+    <div class="modal-card modal-sm">
         <div class="modal-header">
-            <h3 style="color: #dc2626;">Hapus Akun Permanen</h3>
+            <h3 class="danger-title" style="font-size: 1.15rem; margin: 0;">Hapus Akun Permanen</h3>
             <button type="button" class="modal-close" onclick="closeDeleteAccountModal()" aria-label="Tutup">&times;</button>
         </div>
         <div class="modal-body">
-            <div class="alert alert-error" style="margin-bottom: 1.15rem; font-size: 0.85rem; line-height: 1.45;">
+            <div class="alert alert-error" style="line-height: 1.45;">
                 <strong>Peringatan:</strong> Tindakan ini bersifat permanen. Seluruh profil dan riwayat analisis undertone Anda akan dihapus dari sistem.
             </div>
 
             <?php if (!empty($deleteAccountError)): ?>
-                <div class="alert alert-error" style="margin-bottom: 1rem; font-size: 0.85rem;">
+                <div class="alert alert-error">
                     <?= htmlspecialchars($deleteAccountError) ?>
                 </div>
             <?php endif; ?>
@@ -534,9 +534,9 @@ require_once __DIR__ . '/includes/header.php';
                         </button>
                     </div>
                 </div>
-                <div style="display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 0.75rem;">
+                <div class="actions-row actions-right" style="margin-top: 0.75rem;">
                     <button type="button" class="btn btn-secondary" onclick="closeDeleteAccountModal()">Batal</button>
-                    <button type="submit" name="delete_account" class="btn" style="background: #dc2626; color: #ffffff; border: none; padding: 0.65rem 1rem; border-radius: 6px; font-weight: 600; cursor: pointer;">
+                    <button type="submit" name="delete_account" class="btn btn-danger">
                         Ya, Hapus Akun
                     </button>
                 </div>

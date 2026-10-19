@@ -10,7 +10,7 @@ $pageTitle = 'Dashboard - glossa';
 require_once __DIR__ . '/includes/header.php';
 ?>
 
-<div class="dashboard-wrapper">
+<div class="dashboard-wrapper layout-narrow layout-stack">
     <div class="user-greeting-banner">
         <span class="greeting-subtitle"><?= $authUser ? 'Welcome back,' : 'Welcome,' ?></span>
         <h1 class="greeting-name"><?= $authUser ? htmlspecialchars($authUser['name']) : 'Natural Beauty' ?></h1>
@@ -28,7 +28,7 @@ require_once __DIR__ . '/includes/header.php';
         <p>Gunakan kamera perangkat Anda untuk memindai wajah dan menganalisis undertone kulit secara akurat.</p>
         
         <button type="button" class="btn btn-primary" id="btnScanCamera" data-auth="<?= $authUser ? '1' : '0' ?>">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn-icon">
                 <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
                 <circle cx="12" cy="13" r="4"></circle>
             </svg>
@@ -39,7 +39,7 @@ require_once __DIR__ . '/includes/header.php';
 
 <?php if (!$authUser): ?>
 <div class="modal-overlay" id="authModal" aria-hidden="true">
-    <div class="modal-card">
+    <div class="modal-card modal-sm">
         <div class="modal-header">
             <h3>Autentikasi Diperlukan</h3>
             <button type="button" class="modal-close" id="closeAuthModal" aria-label="Tutup">&times;</button>
@@ -47,7 +47,7 @@ require_once __DIR__ . '/includes/header.php';
         <div class="modal-body">
             <p class="modal-desc">Silakan masuk atau daftar akun terlebih dahulu untuk menggunakan fitur scan kamera.</p>
             
-            <div class="auth-tabs" style="margin-bottom: 1.25rem;">
+            <div class="auth-tabs">
                 <button type="button" class="auth-tab active" id="tabLoginBtn">Masuk</button>
                 <button type="button" class="auth-tab" id="tabRegisterBtn">Daftar Akun</button>
             </div>
@@ -150,17 +150,17 @@ require_once __DIR__ . '/includes/header.php';
                 </div>
             </div>
             <div class="camera-actions" id="cameraActions">
-                <button type="button" class="btn btn-primary" id="btnCapture" style="width: 100%;">Ambil Gambar & Analisis</button>
+                <button type="button" class="btn btn-primary btn-block" id="btnCapture">Ambil Gambar & Analisis</button>
             </div>
 
-            <div id="scanResultBox" class="scan-result-card" style="display: none; margin-top: 1.25rem;">
+            <div id="scanResultBox" class="scan-result-card" style="display: none;">
                 <div class="scan-result-header">
                     <span class="undertone-badge" id="resUndertoneBadge">Warm Undertone</span>
                     <span class="shape-badge" id="resFaceShapeBadge" style="display: none;">Oval Face</span>
                     <span class="accuracy-pill" id="resAccuracyBadge">96% Akurasi</span>
                 </div>
                 <p id="resRecommendation" class="scan-result-desc"></p>
-                <div class="scan-result-footer" style="display: flex; gap: 0.75rem; justify-content: center; margin-top: 1rem;">
+                <div class="scan-result-footer actions-row actions-center">
                     <a href="profile.php" class="btn btn-primary btn-sm">Lihat Detail di Profil</a>
                     <button type="button" class="btn btn-secondary btn-sm" id="btnScanAgain">Scan Ulang</button>
                 </div>

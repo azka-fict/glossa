@@ -29,13 +29,17 @@ $options = [
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
 ];
 
+date_default_timezone_set(getenv('APP_TIMEZONE') ?: 'Asia/Jakarta');
+
 try {
     $pdo = new PDO($dsn, $user, $pass, $options);
+    $pdo->exec("SET time_zone = '+07:00'");
 } catch (PDOException $e) {
     if ($e->getCode() == 1049 && file_exists(__DIR__ . '/../schema.sql')) {
         $tempPdo = new PDO("mysql:host=$host", $user, $pass, $options);
         $tempPdo->exec(file_get_contents(__DIR__ . '/../schema.sql'));
         $pdo = new PDO($dsn, $user, $pass, $options);
+        $pdo->exec("SET time_zone = '+07:00'");
     } else {
         die("Koneksi database gagal: " . $e->getMessage());
     }
