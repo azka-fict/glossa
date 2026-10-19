@@ -21,7 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const cameraStatus = document.getElementById('cameraStatus');
     const cameraFlash = document.getElementById('cameraFlash');
     const scannerFrame = document.querySelector('.scanner-frame');
-    const captureSuccess = document.getElementById('captureSuccess');
     let mediaStream = null;
 
     function playShutterSound() {
@@ -64,7 +63,6 @@ document.addEventListener('DOMContentLoaded', () => {
             cameraStatus.style.display = 'block';
             cameraStatus.textContent = 'Menghubungkan ke kamera...';
         }
-        if (captureSuccess) captureSuccess.style.display = 'none';
 
         try {
             if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {

@@ -17,10 +17,9 @@ $currentScript = basename($_SERVER['SCRIPT_NAME'] ?? '');
         <a href="index.php" class="brand">glossa</a>
         <nav class="nav-links">
             <a href="index.php" class="nav-link <?= $currentScript === 'index.php' ? 'active' : '' ?>">Dashboard</a>
-            <a href="tutorial.php" class="nav-link <?= $currentScript === 'tutorial.php' ? 'active' : '' ?>">Tutorial</a>
             <?php if ($authUser): ?>
                 <a href="profile.php" class="nav-link <?= $currentScript === 'profile.php' ? 'active' : '' ?>">Profile</a>
-                <a href="logout.php" class="nav-link">Keluar</a>
+                <a href="logout.php" class="nav-link" onclick="return confirm('Apakah Anda yakin ingin keluar?')">Keluar</a>
             <?php else: ?>
                 <a href="login.php" class="nav-link <?= $currentScript === 'login.php' ? 'active' : '' ?>">Masuk</a>
             <?php endif; ?>

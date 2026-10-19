@@ -1,11 +1,6 @@
 <?php
 require_once __DIR__ . '/includes/auth.php';
 
-if (current_user()) {
-    header('Location: index.php');
-    exit;
-}
-
 if (isset($_GET['action'])) {
     setcookie('glossa_onboarded', '1', [
         'expires' => time() + (86400 * 365),
@@ -13,7 +8,12 @@ if (isset($_GET['action'])) {
         'httponly' => false,
         'samesite' => 'Lax'
     ]);
-    header('Location: index.php?skip_onboarding=1');
+    header('Location: index.php');
+    exit;
+}
+
+if (current_user() || !empty($_COOKIE['glossa_onboarded'])) {
+    header('Location: index.php');
     exit;
 }
 
@@ -28,7 +28,7 @@ $pageTitle = 'Glossa - Know your Natural Beauty';
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/style.css?v=<?= filemtime(__DIR__ . '/assets/css/style.css') ?>">
 </head>
 <body class="beauty-onboarding-body">
 

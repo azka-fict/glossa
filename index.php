@@ -24,8 +24,8 @@ require_once __DIR__ . '/includes/header.php';
                 <circle cx="12" cy="13" r="4"></circle>
             </svg>
         </div>
-        <h2>Fitur Scan Kamera</h2>
-        <p>Gunakan kamera perangkat Anda untuk memindai dokumen, teks, atau kode secara langsung.</p>
+        <h2>Scan Undertone Wajah</h2>
+        <p>Gunakan kamera perangkat Anda untuk memindai wajah dan menganalisis undertone kulit secara akurat.</p>
         
         <button type="button" class="btn btn-primary" id="btnScanCamera" data-auth="<?= $authUser ? '1' : '0' ?>">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
