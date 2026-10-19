@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Masuk ke glossa</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<header class="navbar">
+    <div class="nav-container">
+        <a href="index.html" class="brand">glossa</a>
+        <nav class="nav-links">
+            <a href="index.html" class="nav-link">Dashboard</a>
+            <a href="login.html" class="nav-link active">Masuk</a>
+        </nav>
+    </div>
+</header>
+<main class="container">
+
+<div class="auth-card">
+    <div class="auth-tabs">
+        <a href="login.html" class="auth-tab active">Masuk</a>
+        <a href="register.html" class="auth-tab">Daftar Akun</a>
+    </div>
+
+    <h2>Masuk ke glossa</h2>
+    <p class="subtitle">Silakan masukkan email dan password Anda</p>
+
+    <div id="authAlertInfo" class="alert alert-info" style="display: none;">
+        Autentikasi Diperlukan: Silakan masuk atau daftar akun terlebih dahulu untuk menggunakan fitur scan kamera.
+    </div>
+
+    <div id="authAlertSuccess" class="alert alert-success" style="display: none;"></div>
+    <div id="authAlertError" class="alert alert-error" style="display: none;"></div>
+
+    <form id="loginForm" class="auth-form">
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required autofocus placeholder="nama@email.com">
+        </div>
+
+        <div class="form-group">
+            <div class="label-with-link">
+                <label for="password">Password</label>
+                <a href="forgot_password.html" class="forgot-link">Lupa password?</a>
+            </div>
+            <div class="password-input-wrapper">
+                <input type="password" id="password" name="password" required placeholder="Masukkan password Anda">
+                <button type="button" class="btn-toggle-password" aria-label="Lihat password" title="Lihat password">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                </button>
+            </div>
+        </div>
+
+        <button type="submit" id="btnSubmitLogin" class="btn btn-primary">Masuk</button>
+    </form>
+
+    <div class="auth-footer">
+        Belum punya akun? <a href="register.html">Daftar sekarang</a>
+    </div>
+</div>
+
+</main>
+
+<script src="assets/js/app.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('redirect') === 'scan') {
+        document.getElementById('authAlertInfo').style.display = 'block';
+    }
+
+    const user = await GlossaApp.getCurrentUser();
+    if (user) {
+        window.location.href = 'index.html';
+        return;
+    }
+
+    const eyeSvg = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
+    const eyeOffSvg = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>';
+
+    document.querySelectorAll('.btn-toggle-password').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const wrapper = btn.closest('.password-input-wrapper');
+            const input = wrapper ? wrapper.querySelector('input') : null;
+            if (!input) return;
+            const isPassword = input.type === 'password';
+            input.type = isPassword ? 'text' : 'password';
+            btn.innerHTML = isPassword ? eyeOffSvg : eyeSvg;
+        });
+    });
+
+    const form = document.getElementById('loginForm');
+    const alertError = document.getElementById('authAlertError');
+    const btnSubmit = document.getElementById('btnSubmitLogin');
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        alertError.style.display = 'none';
+        btnSubmit.disabled = true;
+        btnSubmit.textContent = 'Memverifikasi...';
+
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+
+        try {
+            const res = await fetch('api/auth.php?action=login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+            const data = await res.json();
+            if (data.success) {
+                const target = params.get('redirect') === 'scan' ? 'index.html?action=scan' : 'index.html';
+                window.location.href = target;
+            } else {
+                alertError.textContent = data.error || 'Email atau password salah.';
+                alertError.style.display = 'block';
+            }
+        } catch (err) {
+            alertError.textContent = 'Gagal menghubungi server. Silakan coba lagi.';
+            alertError.style.display = 'block';
+        } finally {
+            btnSubmit.disabled = false;
+            btnSubmit.textContent = 'Masuk';
+        }
+    });
+});
+</script>
+</body>
+</html>

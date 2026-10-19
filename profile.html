@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Saya - glossa</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<header class="navbar">
+    <div class="nav-container">
+        <a href="index.html" class="brand">glossa</a>
+        <nav class="nav-links">
+            <a href="index.html" class="nav-link">Dashboard</a>
+            <a href="profile.html" class="nav-link active">Profile</a>
+            <a href="#" id="navLogoutBtn" class="nav-link">Keluar</a>
+        </nav>
+    </div>
+</header>
+<main class="container">
+
+<div class="profile-wrapper">
+    <div class="profile-card">
+        <div id="profileGlobalAlert" class="alert alert-success" style="display: none;"></div>
+
+        <div class="profile-header">
+            <div class="profile-titles">
+                <h1 id="profHeaderName">Memuat...</h1>
+                <p class="profile-email" id="profHeaderEmail">...</p>
+            </div>
+        </div>
+
+        
+        <div id="emailVerifyBanner" class="email-verify-banner" style="display: none;">
+            <div class="banner-top">
+                <div class="banner-icon-badge" aria-hidden="true">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                </div>
+                <div class="banner-body">
+                    <div class="banner-title">Email Belum Terkonfirmasi</div>
+                    <div class="banner-text">Konfirmasi untuk mengamankan akun & riwayat analisis Anda.</div>
+                </div>
+            </div>
+            <button type="button" class="btn-banner-action" onclick="openVerifyEmailModal()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                Konfirmasi Sekarang
+            </button>
+        </div>
+
+        <div class="profile-details">
+            <div class="detail-row">
+                <span class="detail-label">Nama Lengkap</span>
+                <div class="detail-value-group">
+                    <span class="detail-value" id="profDetailName">-</span>
+                    <button type="button" class="btn-edit-inline" onclick="openEditNameModal()">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Ubah
+                    </button>
+                </div>
+            </div>
+
+            <div class="detail-row detail-row-email">
+                <div class="email-header-line">
+                    <span class="detail-label">Email</span>
+                    <div class="badge-group">
+                        <span id="profVerifyBadge" class="status-badge unverified">
+                            Belum Terverifikasi
+                        </span>
+                        <button type="button" class="btn-edit-inline" onclick="openEditEmailModal()" title="Ubah email jika salah ketik / typo">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                            </svg>
+                            Ubah
+                        </button>
+                    </div>
+                </div>
+                <div class="email-content-line">
+                    <span class="email-value-text" id="profDetailEmail">-</span>
+                </div>
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">Tanggal Lahir</span>
+                <span class="detail-value" id="profDetailBirthDate">-</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Usia</span>
+                <span class="detail-value" id="profDetailAge">-</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Terdaftar Sejak</span>
+                <span class="detail-value" id="profDetailCreatedAt">-</span>
+            </div>
+        </div>
+
+        <div class="account-danger-zone">
+            <div class="danger-zone-header">
+                <div class="danger-zone-text">
+                    <span class="danger-title">Hapus Akun</span>
+                    <p class="danger-desc">Hapus akun secara permanen beserta seluruh data riwayat analisis Anda.</p>
+                </div>
+                <button type="button" class="btn btn-danger-outline" onclick="openDeleteAccountModal()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    </svg>
+                    Hapus Akun
+                </button>
+            </div>
+        </div>
+    </div>
+
+    
+    <div class="history-section">
+        <div class="section-header">
+            <h2>Riwayat Scan Undertone Wajah</h2>
+            <span class="history-count" id="historyCount">0 Hasil</span>
+        </div>
+
+        <div id="historyEmptyState" class="history-empty-card" style="display: none;">
+            <div class="empty-icon-wrap" aria-hidden="true">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                    <circle cx="12" cy="13" r="4"></circle>
+                </svg>
+            </div>
+            <h3>Belum Ada Riwayat Scan</h3>
+            <p>Gunakan kamera untuk mendeteksi apakah undertone kulit wajah Anda Warm, Cool, atau Neutral beserta rekomendasi warna terbaik.</p>
+            <a href="index.html" class="btn btn-primary btn-sm">Mulai Scan Sekarang</a>
+        </div>
+
+        <div id="historyListContainer" class="history-list"></div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="editNameModal" aria-hidden="true">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h3>Ubah Nama Lengkap</h3>
+            <button type="button" class="modal-close" onclick="closeEditNameModal()" aria-label="Tutup">&times;</button>
+        </div>
+        <div id="editNameAlert" class="alert alert-error" style="display: none;"></div>
+        <form id="formEditName" class="auth-form">
+            <div class="form-group">
+                <label for="inputNewName">Nama Lengkap</label>
+                <input type="text" id="inputNewName" name="name" required minlength="2" maxlength="100">
+            </div>
+            <div class="actions-row actions-right" style="margin-top: 0.75rem;">
+                <button type="button" class="btn btn-secondary" onclick="closeEditNameModal()">Batal</button>
+                <button type="submit" id="btnSubmitEditName" class="btn btn-primary">Simpan Perubahan</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal-overlay" id="editEmailModal" aria-hidden="true">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h3>Ubah Alamat Email</h3>
+            <button type="button" class="modal-close" onclick="closeEditEmailModal()" aria-label="Tutup">&times;</button>
+        </div>
+        <p class="modal-desc">Perbaiki alamat email Anda jika terjadi kesalahan ketik (typo). Status verifikasi email akan di-reset setelah email diubah.</p>
+        <div id="editEmailAlert" class="alert alert-error" style="display: none;"></div>
+        <form id="formEditEmail" class="auth-form">
+            <div class="form-group">
+                <label for="inputNewEmail">Alamat Email Baru</label>
+                <input type="email" id="inputNewEmail" name="email" required>
+            </div>
+            <div class="actions-row actions-right" style="margin-top: 0.75rem;">
+                <button type="button" class="btn btn-secondary" onclick="closeEditEmailModal()">Batal</button>
+                <button type="submit" id="btnSubmitEditEmail" class="btn btn-primary">Simpan Email</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal-overlay" id="verifyEmailModal" aria-hidden="true">
+    <div class="modal-card modal-sm">
+        <div class="modal-close-row">
+            <button type="button" class="modal-close" onclick="closeVerifyEmailModal()" aria-label="Tutup">&times;</button>
+        </div>
+
+        <div class="otp-modal-header">
+            <div class="otp-icon-badge" aria-hidden="true">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                    <polyline points="22,6 12,13 2,6"></polyline>
+                </svg>
+            </div>
+            <h3>Konfirmasi Email Akun</h3>
+            <p class="otp-modal-subtitle">
+                Kode 6 digit OTP dikirimkan ke alamat email:<br>
+                <span class="email-pill" id="otpDisplayEmail">...</span>
+            </p>
+        </div>
+
+        <div id="verifyEmailSuccessAlert" class="alert alert-success text-center" style="display: none;"></div>
+        <div id="verifyEmailErrorAlert" class="alert alert-error text-center" style="display: none;"></div>
+
+        <form id="formVerifyEmail" class="auth-form" style="margin-bottom: 0.5rem;">
+            <div class="form-group" style="margin-bottom: 1.15rem;">
+                <label for="verification_code" style="text-align: center; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">Masukkan 6 Digit Kode Konfirmasi</label>
+                <div class="otp-input-wrapper">
+                    <input type="text" id="verification_code" name="code" 
+                           maxlength="6" pattern="[0-9]{6}" inputmode="numeric" autocomplete="one-time-code"
+                           placeholder="······" required class="otp-field">
+                </div>
+                <p class="otp-hint">Masa aktif kode verifikasi: 15 menit</p>
+            </div>
+
+            <button type="submit" id="btnSubmitVerifyOtp" class="btn btn-primary btn-block">
+                Konfirmasi Sekarang
+            </button>
+        </form>
+
+        <div class="resend-box">
+            <span style="font-size: 0.8rem; color: var(--text-muted);">Belum menerima kode?</span>
+            <button type="button" id="btnResendOtp" class="btn-link-resend">
+                Kirim Ulang Kode Verifikasi
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="scanDetailModal" aria-hidden="true">
+    <div class="modal-card modal-scan-detail">
+        <div class="modal-header">
+            <div>
+                <span class="modal-pretitle" id="modalScanDate">Tanggal Scan</span>
+                <h3 id="modalScanTitle">Detail Hasil Analisis Undertone</h3>
+            </div>
+            <button type="button" class="modal-close" onclick="closeScanDetailModal()" aria-label="Tutup">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="scan-detail-hero">
+                <div class="hero-left">
+                    <span class="undertone-badge-lg" id="modalUndertoneBadge">Warm Undertone</span>
+                    <span class="shape-badge-lg" id="modalFaceShapeBadge" style="display: none;">Oval Face</span>
+                    <span class="accuracy-pill-lg" id="modalAccuracy">96% Akurasi</span>
+                </div>
+                <div class="hero-right">
+                    <div class="color-sample-box">
+                        <span class="color-swatch-lg" id="modalColorSwatch"></span>
+                        <div class="color-sample-info">
+                            <span class="sample-label">Tone Kulit</span>
+                            <strong id="modalSkinTone">Medium</strong>
+                            <span class="hex-label" id="modalHexColor">#E2A76F</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="detail-section">
+                <h4 class="detail-section-title">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="16" x2="12" y2="12"></line>
+                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg>
+                    Karakteristik & Ciri Alami
+                </h4>
+                <p class="detail-desc" id="modalCharacteristics"></p>
+            </div>
+
+            <div class="detail-section">
+                <h4 class="detail-section-title">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"></path>
+                    </svg>
+                    Palet Busana & Pakaian Terbaik
+                </h4>
+                <div class="swatches-grid" id="modalClothingSwatches"></div>
+            </div>
+
+            <div class="detail-section">
+                <h4 class="detail-section-title">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                    </svg>
+                    Rekomendasi Lipstik & Makeup
+                </h4>
+                <div class="swatches-grid" id="modalLipstickSwatches"></div>
+            </div>
+
+            <div class="detail-section" id="modalFaceShapeSection" style="display: none;">
+                <h4 class="detail-section-title">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                        <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                        <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                    </svg>
+                    Analisis Bentuk Wajah (<span id="modalFaceShapeTitle">Oval</span>)
+                </h4>
+                <p class="detail-desc" id="modalFaceShapeDesc"></p>
+                <div class="face-shape-tips-grid">
+                    <div class="face-shape-tip-card">
+                        <div class="tip-card-header">
+                            <span class="tip-icon">👓</span>
+                            <strong>Model Kacamata Terbaik</strong>
+                        </div>
+                        <p id="modalEyewearTip" class="tip-card-text">-</p>
+                    </div>
+                    <div class="face-shape-tip-card">
+                        <div class="tip-card-header">
+                            <span class="tip-icon">💇</span>
+                            <strong>Gaya Rambut & Hijab</strong>
+                        </div>
+                        <p id="modalHairstyleTip" class="tip-card-text">-</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-detail-footer">
+                <button type="button" class="btn-danger-outline" id="btnDeleteCurrentScan">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    </svg>
+                    Hapus Riwayat
+                </button>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="closeScanDetailModal()">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="deleteAccountModal" aria-hidden="true">
+    <div class="modal-card modal-sm">
+        <div class="modal-header">
+            <h3 class="danger-title" style="font-size: 1.15rem; margin: 0;">Hapus Akun Permanen</h3>
+            <button type="button" class="modal-close" onclick="closeDeleteAccountModal()" aria-label="Tutup">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="alert alert-error" style="line-height: 1.45;">
+                <strong>Peringatan:</strong> Tindakan ini bersifat permanen. Seluruh profil dan riwayat analisis undertone Anda akan dihapus dari sistem.
+            </div>
+
+            <div id="deleteAccountAlert" class="alert alert-error" style="display: none;"></div>
+
+            <form id="formDeleteAccount" class="auth-form">
+                <div class="form-group">
+                    <label for="delete_confirm_password">Masukkan Password Anda untuk Konfirmasi</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="delete_confirm_password" name="password" required placeholder="Password akun Anda">
+                        <button type="button" class="btn-toggle-password" aria-label="Lihat password" title="Lihat password">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="actions-row actions-right" style="margin-top: 0.75rem;">
+                    <button type="button" class="btn btn-secondary" onclick="closeDeleteAccountModal()">Batal</button>
+                    <button type="submit" id="btnSubmitDeleteAccount" class="btn btn-danger">
+                        Ya, Hapus Akun
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+</main>
+
+<script src="assets/js/app.js"></script>
+<script>
+let activeUserData = null;
+let activeScanList = [];
+let currentViewingScanId = null;
+
+const undertoneDetailsMap = {
+    'Warm': {
+        characteristics: 'Kulit Anda memiliki rona dasar hangat (keemasan, persik, atau kuning) di bawah permukaan kulit. Pembuluh darah di pergelangan tangan umumnya cenderung kehijauan. Warna kulit Anda tampak semakin bersinar cerah saat mengenakan busana berelemen hangat dan perhiasan emas.',
+        clothing: [
+            { name: 'Terracotta', hex: '#D95D39' },
+            { name: 'Peach', hex: '#F4A261' },
+            { name: 'Mustard', hex: '#E9C46A' },
+            { name: 'Olive Green', hex: '#606C38' },
+            { name: 'Warm Gold', hex: '#D4AF37' }
+        ],
+        lipstick: [
+            { name: 'Coral', hex: '#E76F51' },
+            { name: 'Brick Red', hex: '#A44234' },
+            { name: 'Warm Nude', hex: '#C88A68' }
+        ]
+    },
+    'Cool': {
+        characteristics: 'Kulit Anda memiliki rona dasar sejuk (merah muda, kebiruan, atau kemerahan) di bawah permukaan kulit. Pembuluh darah di pergelangan tangan umumnya cenderung berwarna biru atau ungu. Sangat memikat dan selaras dengan warna-warna sejuk dan perhiasan perak/silver.',
+        clothing: [
+            { name: 'Berry', hex: '#800E34' },
+            { name: 'Emerald', hex: '#007F5F' },
+            { name: 'Royal Blue', hex: '#1D3557' },
+            { name: 'Ice Silver', hex: '#94A3B8' },
+            { name: 'Lavender', hex: '#BDB2FF' }
+        ],
+        lipstick: [
+            { name: 'Rose Pink', hex: '#D94676' },
+            { name: 'Plum', hex: '#6F1D46' },
+            { name: 'Berry Red', hex: '#990F3D' }
+        ]
+    },
+    'Neutral': {
+        characteristics: 'Kulit Anda memiliki keseimbangan harmonis antara rona hangat dan sejuk. Pembuluh darah di pergelangan tangan terlihat kombinasi antara biru dan hijau. Anda sangat fleksibel dan serasi mengenakan perhiasan emas maupun perak.',
+        clothing: [
+            { name: 'Dusty Pink', hex: '#D48C8C' },
+            { name: 'Jade Green', hex: '#81B29A' },
+            { name: 'Soft Navy', hex: '#3D5A80' },
+            { name: 'Rose Gold', hex: '#B76E79' },
+            { name: 'Soft Sand', hex: '#D2B48C' }
+        ],
+        lipstick: [
+            { name: 'Soft Mauve', hex: '#9E5A63' },
+            { name: 'Peachy Nude', hex: '#D88E75' },
+            { name: 'Rose Nude', hex: '#C47B7B' }
+        ]
+    }
+};
+
+const faceShapeDetailsMap = {
+    'Oval': {
+        desc: 'Bentuk wajah oval memiliki proporsi alami yang seimbang, dahi sedikit lebih lebar dari dagu, dengan garis rahang melengkung lembut.',
+        eyewear: 'Sangat fleksibel; hampir semua model bingkai cocok, terutama kacamata geometris, rectangular, atau cat-eye seimbang.',
+        hair: 'Potongan layer panjang, bob sebahu bertekstur, atau belah samping natural.'
+    },
+    'Round': {
+        desc: 'Bentuk wajah bulat memiliki panjang dan lebar wajah relatif sama dengan pipi penuh serta kontur rahang membulat.',
+        eyewear: 'Bingkai bersudut tegas seperti rectangular (persegi panjang), wayfarer, atau cat-eye tinggi untuk memberi siluet tirus.',
+        hair: 'Layer bertingkat panjang di bawah dagu, volume pada mahkota kepala, atau poni samping membingkai pipi.'
+    },
+    'Square': {
+        desc: 'Bentuk wajah kotak memiliki garis rahang tegas dan lebar dahi, pipi, serta rahang yang simetris horizontal.',
+        eyewear: 'Bingkai bulat (round), oval, atau kurva lembut untuk melembutkan ketegasan garis rahang.',
+        hair: 'Gaya soft waves (ombak lembut), poni tirai (curtain bangs), atau layer bertingkat.'
+    },
+    'Heart': {
+        desc: 'Bentuk wajah hati memiliki dahi yang relatif lebar, tulang pipi menonjol, dan dagu yang meruncing manis.',
+        eyewear: 'Bingkai aviator, bulat tipis, atau kacamata dengan bagian bawah lebih lebar untuk menyeimbangkan area dagu.',
+        hair: 'Bob sebahu dengan volume di dekat dagu atau curtain bangs membingkai dahi.'
+    },
+    'Diamond': {
+        desc: 'Bentuk wajah diamond memiliki tulang pipi tinggi dan menonjol, dengan dahi serta dagu yang lebih ramping.',
+        eyewear: 'Bingkai cat-eye melengkung halus, kacamata oval tanpa bingkai tebal (rimless), atau model browline.',
+        hair: 'Potongan bob bervolume di dagu, poni samping lembut, atau layer sebahu.'
+    },
+    'Oblong': {
+        desc: 'Bentuk wajah oblong (panjang) memiliki panjang wajah lebih dominan dengan garis pipi cenderung lurus vertikal.',
+        eyewear: 'Bingkai lebar / oversized atau bingkai dengan ornamen dekoratif pada pelipis untuk menambah kesan proporsional.',
+        hair: 'Poni penuh (blunt bangs) di dahi atau rambut bergelombang mekar di sisi samping.'
+    }
+};
+
+function formatDate(dateStr) {
+    if (!dateStr) return '-';
+    const d = new Date(dateStr.replace(/-/g, '/'));
+    if (isNaN(d)) return dateStr;
+    return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+
+function formatDateTime(dateStr) {
+    if (!dateStr) return '-';
+    const d = new Date(dateStr.replace(/-/g, '/'));
+    if (isNaN(d)) return dateStr;
+    return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) + ' WIB';
+}
+
+function escapeHtml(str) {
+    if (!str) return '';
+    return String(str).replace(/[&<>"']/g, s => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[s]));
+}
+
+async function loadProfile() {
+    try {
+        const res = await fetch('api/profile.php');
+        if (res.status === 401) {
+            window.location.href = 'login.html';
+            return;
+        }
+        const data = await res.json();
+        if (!data.success) {
+            alert(data.error || 'Gagal memuat profil.');
+            return;
+        }
+
+        activeUserData = data.user;
+        activeScanList = data.scan_history || [];
+
+        renderUserData();
+        renderScanHistory();
+    } catch (err) {
+        console.error('Error load profile:', err);
+    }
+}
+
+function renderUserData() {
+    if (!activeUserData) return;
+    const u = activeUserData;
+
+    document.getElementById('profHeaderName').textContent = u.name;
+    document.getElementById('profHeaderEmail').textContent = u.email;
+    document.getElementById('profDetailName').textContent = u.name;
+    document.getElementById('profDetailEmail').textContent = u.email;
+    document.getElementById('inputNewName').value = u.name;
+    document.getElementById('inputNewEmail').value = u.email;
+    document.getElementById('otpDisplayEmail').textContent = u.email;
+
+    document.getElementById('profDetailBirthDate').textContent = formatDate(u.birth_date);
+    document.getElementById('profDetailAge').textContent = u.age ? `${u.age} tahun` : '-';
+    document.getElementById('profDetailCreatedAt').textContent = formatDateTime(u.created_at);
+
+    const banner = document.getElementById('emailVerifyBanner');
+    const badge = document.getElementById('profVerifyBadge');
+
+    if (u.is_verified) {
+        banner.style.display = 'none';
+        badge.className = 'status-badge verified';
+        badge.innerHTML = `
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            Terverifikasi
+        `;
+        badge.onclick = null;
+        badge.style.cursor = 'default';
+    } else {
+        banner.style.display = 'block';
+        badge.className = 'status-badge unverified clickable';
+        badge.innerHTML = `
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            Belum Terverifikasi
+        `;
+        badge.onclick = openVerifyEmailModal;
+        badge.style.cursor = 'pointer';
+    }
+}
+
+function renderScanHistory() {
+    const countEl = document.getElementById('historyCount');
+    const emptyEl = document.getElementById('historyEmptyState');
+    const listEl = document.getElementById('historyListContainer');
+
+    countEl.textContent = `${activeScanList.length} Hasil`;
+
+    if (activeScanList.length === 0) {
+        emptyEl.style.display = 'block';
+        listEl.innerHTML = '';
+        return;
+    }
+
+    emptyEl.style.display = 'none';
+    listEl.innerHTML = activeScanList.map(scan => {
+        const undertoneClass = (scan.undertone || 'neutral').toLowerCase();
+        let faceShape = scan.face_shape || '';
+        if (!faceShape && scan.recommendations) {
+            const m = scan.recommendations.match(/Bentuk Wajah\s+([A-Za-z]+):/i);
+            if (m) faceShape = m[1].charAt(0).toUpperCase() + m[1].slice(1).toLowerCase();
+        }
+
+        return `
+            <div class="history-card clickable-history-card" onclick="openScanDetailModal(${scan.id})" tabindex="0" role="button" aria-label="Lihat detail hasil scan">
+                <div class="history-card-header">
+                    <div class="undertone-tag-group">
+                        <span class="undertone-badge ${escapeHtml(undertoneClass)}">
+                            ${escapeHtml(scan.undertone)} Undertone
+                        </span>
+                        ${faceShape ? `<span class="shape-badge">${escapeHtml(faceShape)} Face</span>` : ''}
+                        <span class="accuracy-pill">${parseInt(scan.accuracy || 95)}% Akurasi</span>
+                    </div>
+                    <div class="history-header-right">
+                        <time class="history-date">${formatDateTime(scan.created_at)}</time>
+                        <button type="button" class="btn-delete-history" title="Hapus riwayat" aria-label="Hapus riwayat" onclick="deleteScanItem(${scan.id}, event)">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="history-card-body">
+                    <div class="history-meta">
+                        ${scan.dominant_color ? `<span class="color-indicator" style="background-color: ${escapeHtml(scan.dominant_color)};" title="Sampel Warna: ${escapeHtml(scan.dominant_color)}"></span>` : ''}
+                        <span class="skin-tone-label">Tone: <strong>${escapeHtml(scan.skin_tone || 'Medium')}</strong></span>
+                        ${faceShape ? `<span class="face-shape-meta">&bull; Wajah: <strong>${escapeHtml(faceShape)}</strong></span>` : ''}
+                        <span class="view-detail-hint">
+                            Lihat Detail
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function openModal(modal) {
+    if (!modal) return;
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
+}
+
+function closeModal(modal) {
+    if (!modal) return;
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden', 'true');
+}
+
+function openEditNameModal() {
+    openModal(document.getElementById('editNameModal'));
+    document.getElementById('editNameAlert').style.display = 'none';
+    setTimeout(() => document.getElementById('inputNewName')?.focus(), 50);
+}
+function closeEditNameModal() { closeModal(document.getElementById('editNameModal')); }
+
+function openEditEmailModal() {
+    openModal(document.getElementById('editEmailModal'));
+    document.getElementById('editEmailAlert').style.display = 'none';
+    setTimeout(() => document.getElementById('inputNewEmail')?.focus(), 50);
+}
+function closeEditEmailModal() { closeModal(document.getElementById('editEmailModal')); }
+
+function openVerifyEmailModal() {
+    openModal(document.getElementById('verifyEmailModal'));
+    document.getElementById('verifyEmailErrorAlert').style.display = 'none';
+    document.getElementById('verifyEmailSuccessAlert').style.display = 'none';
+    setTimeout(() => document.getElementById('verification_code')?.focus(), 50);
+}
+function closeVerifyEmailModal() { closeModal(document.getElementById('verifyEmailModal')); }
+
+function openDeleteAccountModal() {
+    openModal(document.getElementById('deleteAccountModal'));
+    document.getElementById('deleteAccountAlert').style.display = 'none';
+    setTimeout(() => document.getElementById('delete_confirm_password')?.focus(), 50);
+}
+function closeDeleteAccountModal() { closeModal(document.getElementById('deleteAccountModal')); }
+
+function closeScanDetailModal() { closeModal(document.getElementById('scanDetailModal')); }
+
+function openScanDetailModal(scanId) {
+    const scan = activeScanList.find(s => s.id == scanId);
+    if (!scan) return;
+    currentViewingScanId = scan.id;
+
+    document.getElementById('modalScanDate').textContent = formatDateTime(scan.created_at);
+    const undertone = scan.undertone || 'Neutral';
+    const uBadge = document.getElementById('modalUndertoneBadge');
+    uBadge.textContent = `${undertone} Undertone`;
+    uBadge.className = `undertone-badge-lg ${undertone.toLowerCase()}`;
+
+    let faceShape = scan.face_shape || '';
+    if (!faceShape && scan.recommendations) {
+        const m = scan.recommendations.match(/Bentuk Wajah\s+([A-Za-z]+):/i);
+        if (m) faceShape = m[1].charAt(0).toUpperCase() + m[1].slice(1).toLowerCase();
+    }
+
+    const fsBadge = document.getElementById('modalFaceShapeBadge');
+    const fsSection = document.getElementById('modalFaceShapeSection');
+    if (faceShape) {
+        if (fsBadge) {
+            fsBadge.textContent = `${faceShape} Face`;
+            fsBadge.style.display = 'inline-flex';
+        }
+        if (fsSection) {
+            fsSection.style.display = 'block';
+            const fsInfo = faceShapeDetailsMap[faceShape] || faceShapeDetailsMap['Oval'];
+            document.getElementById('modalFaceShapeTitle').textContent = `${faceShape} Face`;
+            document.getElementById('modalFaceShapeDesc').textContent = fsInfo.desc;
+            document.getElementById('modalEyewearTip').textContent = fsInfo.eyewear;
+            document.getElementById('modalHairstyleTip').textContent = fsInfo.hair;
+        }
+    } else {
+        if (fsBadge) fsBadge.style.display = 'none';
+        if (fsSection) fsSection.style.display = 'none';
+    }
+
+    document.getElementById('modalAccuracy').textContent = `${scan.accuracy || 95}% Akurasi`;
+    document.getElementById('modalSkinTone').textContent = scan.skin_tone || 'Medium';
+
+    const hex = scan.dominant_color || '#e2a76f';
+    document.getElementById('modalHexColor').textContent = hex.toUpperCase();
+    document.getElementById('modalColorSwatch').style.backgroundColor = hex;
+
+    const info = undertoneDetailsMap[undertone] || undertoneDetailsMap['Neutral'];
+    document.getElementById('modalCharacteristics').textContent = info.characteristics;
+
+    document.getElementById('modalClothingSwatches').innerHTML = info.clothing.map(item => `
+        <div class="swatch-card">
+            <span class="swatch-color" style="background-color: ${item.hex};"></span>
+            <span class="swatch-name">${item.name}</span>
+        </div>
+    `).join('');
+
+    document.getElementById('modalLipstickSwatches').innerHTML = info.lipstick.map(item => `
+        <div class="swatch-card">
+            <span class="swatch-color" style="background-color: ${item.hex};"></span>
+            <span class="swatch-name">${item.name}</span>
+        </div>
+    `).join('');
+
+    openModal(document.getElementById('scanDetailModal'));
+}
+
+async function deleteScanItem(scanId, e) {
+    if (e) e.stopPropagation();
+    if (!confirm('Hapus riwayat scan ini?')) return;
+
+    try {
+        const res = await fetch('api/profile.php?action=delete_scan', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ scan_id: scanId })
+        });
+        const data = await res.json();
+        if (data.success) {
+            activeScanList = activeScanList.filter(s => s.id != scanId);
+            renderScanHistory();
+            if (currentViewingScanId == scanId) {
+                closeScanDetailModal();
+            }
+        } else {
+            alert(data.error || 'Gagal menghapus riwayat.');
+        }
+    } catch (err) {
+        alert('Gagal menghubungi server.');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadProfile();
+
+    const eyeSvg = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
+    const eyeOffSvg = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>';
+
+    document.querySelectorAll('.btn-toggle-password').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const wrapper = btn.closest('.password-input-wrapper');
+            const input = wrapper ? wrapper.querySelector('input') : null;
+            if (!input) return;
+            const isPassword = input.type === 'password';
+            input.type = isPassword ? 'text' : 'password';
+            btn.innerHTML = isPassword ? eyeOffSvg : eyeSvg;
+        });
+    });
+
+    ['editNameModal', 'editEmailModal', 'verifyEmailModal', 'scanDetailModal', 'deleteAccountModal'].forEach(id => {
+        document.getElementById(id)?.addEventListener('click', (e) => {
+            if (e.target.id === id) closeModal(e.target);
+        });
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            ['editNameModal', 'editEmailModal', 'verifyEmailModal', 'scanDetailModal', 'deleteAccountModal'].forEach(id => {
+                closeModal(document.getElementById(id));
+            });
+        }
+    });
+
+    document.getElementById('formEditName')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const alertEl = document.getElementById('editNameAlert');
+        const btnSubmit = document.getElementById('btnSubmitEditName');
+        alertEl.style.display = 'none';
+        btnSubmit.disabled = true;
+
+        const name = document.getElementById('inputNewName').value.trim();
+        try {
+            const res = await fetch('api/profile.php?action=update_name', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name })
+            });
+            const data = await res.json();
+            if (data.success) {
+                activeUserData.name = name;
+                renderUserData();
+                closeEditNameModal();
+            } else {
+                alertEl.textContent = data.error || 'Gagal mengubah nama.';
+                alertEl.style.display = 'block';
+            }
+        } catch (err) {
+            alertEl.textContent = 'Gagal menghubungi server.';
+            alertEl.style.display = 'block';
+        } finally {
+            btnSubmit.disabled = false;
+        }
+    });
+
+    document.getElementById('formEditEmail')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const alertEl = document.getElementById('editEmailAlert');
+        const btnSubmit = document.getElementById('btnSubmitEditEmail');
+        alertEl.style.display = 'none';
+        btnSubmit.disabled = true;
+
+        const email = document.getElementById('inputNewEmail').value.trim();
+        try {
+            const res = await fetch('api/profile.php?action=update_email', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            });
+            const data = await res.json();
+            if (data.success) {
+                activeUserData.email = email;
+                activeUserData.is_verified = false;
+                renderUserData();
+                closeEditEmailModal();
+                openVerifyEmailModal();
+                document.getElementById('verifyEmailSuccessAlert').textContent = data.message;
+                document.getElementById('verifyEmailSuccessAlert').style.display = 'block';
+            } else {
+                alertEl.textContent = data.error || 'Gagal mengubah email.';
+                alertEl.style.display = 'block';
+            }
+        } catch (err) {
+            alertEl.textContent = 'Gagal menghubungi server.';
+            alertEl.style.display = 'block';
+        } finally {
+            btnSubmit.disabled = false;
+        }
+    });
+
+    document.getElementById('formVerifyEmail')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const errAlert = document.getElementById('verifyEmailErrorAlert');
+        const succAlert = document.getElementById('verifyEmailSuccessAlert');
+        const btnSubmit = document.getElementById('btnSubmitVerifyOtp');
+        errAlert.style.display = 'none';
+        succAlert.style.display = 'none';
+        btnSubmit.disabled = true;
+
+        const code = document.getElementById('verification_code').value.trim();
+        try {
+            const res = await fetch('api/profile.php?action=verify_email', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code })
+            });
+            const data = await res.json();
+            if (data.success) {
+                activeUserData.is_verified = true;
+                renderUserData();
+                closeVerifyEmailModal();
+                const globalAlert = document.getElementById('profileGlobalAlert');
+                globalAlert.textContent = 'Email berhasil dikonfirmasi dan terverifikasi!';
+                globalAlert.style.display = 'block';
+                setTimeout(() => globalAlert.style.display = 'none', 4000);
+            } else {
+                errAlert.textContent = data.error || 'Kode verifikasi salah.';
+                errAlert.style.display = 'block';
+            }
+        } catch (err) {
+            errAlert.textContent = 'Gagal menghubungi server.';
+            errAlert.style.display = 'block';
+        } finally {
+            btnSubmit.disabled = false;
+        }
+    });
+
+    document.getElementById('btnResendOtp')?.addEventListener('click', async () => {
+        const errAlert = document.getElementById('verifyEmailErrorAlert');
+        const succAlert = document.getElementById('verifyEmailSuccessAlert');
+        errAlert.style.display = 'none';
+        succAlert.style.display = 'none';
+
+        try {
+            const res = await fetch('api/profile.php?action=send_verify', { method: 'POST' });
+            const data = await res.json();
+            if (data.success) {
+                succAlert.textContent = data.message || 'Kode verifikasi baru telah dikirim.';
+                succAlert.style.display = 'block';
+            } else {
+                errAlert.textContent = data.error || 'Gagal mengirim ulang kode.';
+                errAlert.style.display = 'block';
+            }
+        } catch (err) {
+            errAlert.textContent = 'Gagal menghubungi server.';
+            errAlert.style.display = 'block';
+        }
+    });
+
+    document.getElementById('btnDeleteCurrentScan')?.addEventListener('click', (e) => {
+        if (currentViewingScanId) {
+            deleteScanItem(currentViewingScanId, e);
+        }
+    });
+
+    document.getElementById('formDeleteAccount')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const errAlert = document.getElementById('deleteAccountAlert');
+        const btnSubmit = document.getElementById('btnSubmitDeleteAccount');
+        errAlert.style.display = 'none';
+
+        const password = document.getElementById('delete_confirm_password').value;
+        if (!confirm('Apakah Anda benar-benar yakin ingin menghapus akun Anda secara permanen?')) {
+            return;
+        }
+
+        btnSubmit.disabled = true;
+        btnSubmit.textContent = 'Menghapus akun...';
+
+        try {
+            const res = await fetch('api/profile.php?action=delete_account', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password })
+            });
+            const data = await res.json();
+            if (data.success) {
+                alert('Akun Anda telah berhasil dihapus.');
+                window.location.href = 'index.html';
+            } else {
+                errAlert.textContent = data.error || 'Gagal menghapus akun.';
+                errAlert.style.display = 'block';
+            }
+        } catch (err) {
+            errAlert.textContent = 'Gagal menghubungi server.';
+            errAlert.style.display = 'block';
+        } finally {
+            btnSubmit.disabled = false;
+            btnSubmit.textContent = 'Ya, Hapus Akun';
+        }
+    });
+});
+</script>
+</body>
+</html>

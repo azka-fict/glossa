@@ -1,5 +1,4 @@
 <?php
-// Load .env file if present in project root
 $envFile = __DIR__ . '/../.env';
 if (file_exists($envFile)) {
     $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
@@ -45,7 +44,6 @@ try {
     }
 }
 
-// Auto-migrate schema updates if needed
 try {
     $pdo->exec("ALTER TABLE users ADD COLUMN email_verified_at DATETIME NULL AFTER email");
 } catch (PDOException $e) {}

@@ -1,7 +1,6 @@
 <?php
-require_once __DIR__ . '/includes/auth.php';
-
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=UTF-8');
+require_once __DIR__ . '/../includes/auth.php';
 
 $user = current_user();
 if (!$user) {
@@ -19,7 +18,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $rawInput = file_get_contents('php://input');
 $data = json_decode($rawInput, true) ?? $_POST;
 
-// CSRF validation: checks header X-CSRF-Token or post csrf_token or json csrf_token
 $postToken = $data['csrf_token'] ?? '';
 if (!validate_csrf() && (!isset($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $postToken))) {
     http_response_code(403);
@@ -27,7 +25,6 @@ if (!validate_csrf() && (!isset($_SESSION['csrf_token']) || !hash_equals($_SESSI
     exit;
 }
 
-// Rate limiting: max 15 scans per minute per user
 $rateErr = check_rate_limit($pdo, 'scan', $user['id'], 15, 60);
 if ($rateErr) {
     http_response_code(429);
@@ -49,7 +46,7 @@ $undertone = trim($data['undertone'] ?? '');
 $faceShape = trim($data['face_shape'] ?? '');
 $accuracy = isset($data['accuracy']) ? (int)$data['accuracy'] : 95;
 
-$rfConfig = file_exists(__DIR__ . '/config/roboflow.php') ? require __DIR__ . '/config/roboflow.php' : [];
+$rfConfig = file_exists(__DIR__ . '/../config/roboflow.php') ? require __DIR__ . '/../config/roboflow.php' : [];
 $apiKey = $rfConfig['api_key'] ?? '';
 $undertoneModel = $rfConfig['undertone_model_id'] ?? ($rfConfig['model_id'] ?? '');
 $undertoneVersion = $rfConfig['undertone_version'] ?? ($rfConfig['version'] ?? '1');
@@ -79,7 +76,6 @@ if (strpos($base64, ',') !== false) {
 $mh = curl_multi_init();
 $handles = [];
 
-// Model 1: Undertone
 if (!empty($undertoneModel)) {
     $uUrl = "https://detect.roboflow.com/" . rawurlencode($undertoneModel) . "/" . rawurlencode($undertoneVersion) . "?api_key=" . rawurlencode($apiKey);
     $chU = curl_init($uUrl);
@@ -94,7 +90,6 @@ if (!empty($undertoneModel)) {
     $handles['undertone'] = $chU;
 }
 
-// Model 2: Face Shape
 if (!empty($faceShapeModel)) {
     $fUrl = "https://detect.roboflow.com/" . rawurlencode($faceShapeModel) . "/" . rawurlencode($faceShapeVersion) . "?api_key=" . rawurlencode($apiKey);
     $chF = curl_init($fUrl);
@@ -109,7 +104,6 @@ if (!empty($faceShapeModel)) {
     $handles['face_shape'] = $chF;
 }
 
-// Execute in parallel (non-blocking)
 if (!empty($handles)) {
     $running = null;
     do {
@@ -119,7 +113,6 @@ if (!empty($handles)) {
         }
     } while ($running > 0 && $status === CURLM_OK);
 
-    // Process undertone response
     if (isset($handles['undertone'])) {
         $ch = $handles['undertone'];
         $res = curl_multi_getcontent($ch);
@@ -139,7 +132,6 @@ if (!empty($handles)) {
         }
     }
 
-    // Process face shape response
     if (isset($handles['face_shape'])) {
         $ch = $handles['face_shape'];
         $res = curl_multi_getcontent($ch);
@@ -160,7 +152,6 @@ if (!empty($handles)) {
     curl_multi_close($mh);
 }
 
-// Validasi hasil nyata dari Roboflow (tanpa dummy/fallback acak)
 if (!empty($undertoneModel) && empty($undertone)) {
     http_response_code(422);
     echo json_encode([

@@ -1,19 +1,27 @@
-<?php
-require_once __DIR__ . '/includes/auth.php';
-
-if (!current_user() && empty($_COOKIE['glossa_onboarded'])) {
-    header('Location: onboarding.php');
-    exit;
-}
-
-$pageTitle = 'Dashboard - glossa';
-require_once __DIR__ . '/includes/header.php';
-?>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - glossa</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<header class="navbar">
+    <div class="nav-container">
+        <a href="index.html" class="brand">glossa</a>
+        <nav class="nav-links">
+            <a href="index.html" class="nav-link active">Dashboard</a>
+            <a href="login.html" class="nav-link">Masuk</a>
+        </nav>
+    </div>
+</header>
+<main class="container">
 
 <div class="dashboard-wrapper layout-narrow layout-stack">
     <div class="user-greeting-banner">
-        <span class="greeting-subtitle"><?= $authUser ? 'Welcome back,' : 'Welcome,' ?></span>
-        <h1 class="greeting-name"><?= $authUser ? htmlspecialchars($authUser['name']) : 'Natural Beauty' ?></h1>
+        <span class="greeting-subtitle">Welcome,</span>
+        <h1 class="greeting-name">Natural Beauty</h1>
         <p class="greeting-tagline">Lets find what suit you best</p>
     </div>
 
@@ -27,7 +35,7 @@ require_once __DIR__ . '/includes/header.php';
         <h2>Scan Undertone Wajah</h2>
         <p>Gunakan kamera perangkat Anda untuk memindai wajah dan menganalisis undertone kulit secara akurat.</p>
         
-        <button type="button" class="btn btn-primary" id="btnScanCamera" data-auth="<?= $authUser ? '1' : '0' ?>">
+        <button type="button" class="btn btn-primary" id="btnScanCamera" data-auth="0">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn-icon">
                 <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
                 <circle cx="12" cy="13" r="4"></circle>
@@ -37,7 +45,6 @@ require_once __DIR__ . '/includes/header.php';
     </div>
 </div>
 
-<?php if (!$authUser): ?>
 <div class="modal-overlay" id="authModal" aria-hidden="true">
     <div class="modal-card modal-sm">
         <div class="modal-header">
@@ -54,8 +61,7 @@ require_once __DIR__ . '/includes/header.php';
 
             <div id="modalLoginPanel">
                 <div class="alert alert-error" id="modalLoginAlert" style="display: none;"></div>
-                <form id="modalLoginForm" class="auth-form" method="POST" action="login.php">
-                    <?= csrf_field() ?>
+                <form id="modalLoginForm" class="auth-form">
                     <div class="form-group">
                         <label for="modalLoginEmail">Email</label>
                         <input type="email" id="modalLoginEmail" name="email" required placeholder="nama@email.com">
@@ -63,12 +69,12 @@ require_once __DIR__ . '/includes/header.php';
                     <div class="form-group">
                         <div class="label-with-link">
                             <label for="modalLoginPassword">Password</label>
-                            <a href="forgot_password.php" class="forgot-link">Lupa password?</a>
+                            <a href="forgot_password.html" class="forgot-link">Lupa password?</a>
                         </div>
                         <div class="password-input-wrapper">
                             <input type="password" id="modalLoginPassword" name="password" required placeholder="Masukkan password">
                             <button type="button" class="btn-toggle-password" aria-label="Lihat password" title="Lihat password">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                             </button>
                         </div>
                     </div>
@@ -78,8 +84,7 @@ require_once __DIR__ . '/includes/header.php';
 
             <div id="modalRegisterPanel" style="display: none;">
                 <div class="alert alert-error" id="modalRegisterAlert" style="display: none;"></div>
-                <form id="modalRegisterForm" class="auth-form" method="POST" action="register.php">
-                    <?= csrf_field() ?>
+                <form id="modalRegisterForm" class="auth-form">
                     <div class="form-group">
                         <label for="modalRegName">Nama Lengkap</label>
                         <input type="text" id="modalRegName" name="name" required placeholder="Nama Anda">
@@ -116,7 +121,6 @@ require_once __DIR__ . '/includes/header.php';
         </div>
     </div>
 </div>
-<?php endif; ?>
 
 <div class="modal-overlay" id="cameraModal" aria-hidden="true">
     <div class="modal-card modal-camera-card">
@@ -161,7 +165,7 @@ require_once __DIR__ . '/includes/header.php';
                 </div>
                 <p id="resRecommendation" class="scan-result-desc"></p>
                 <div class="scan-result-footer actions-row actions-center">
-                    <a href="profile.php" class="btn btn-primary btn-sm">Lihat Detail di Profil</a>
+                    <a href="profile.html" class="btn btn-primary btn-sm">Lihat Detail di Profil</a>
                     <button type="button" class="btn btn-secondary btn-sm" id="btnScanAgain">Scan Ulang</button>
                 </div>
             </div>
@@ -169,4 +173,27 @@ require_once __DIR__ . '/includes/header.php';
     </div>
 </div>
 
-<?php require_once __DIR__ . '/includes/footer.php'; ?>
+</main>
+
+<script src="assets/js/app.js"></script>
+<script src="assets/js/main.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+    const hasOnboarded = localStorage.getItem('glossa_onboarded') || document.cookie.includes('glossa_onboarded=1');
+    const user = await GlossaApp.getCurrentUser();
+    
+    if (!user && !hasOnboarded) {
+        window.location.href = 'onboarding.html';
+        return;
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('action') === 'scan' && user) {
+        setTimeout(() => {
+            document.getElementById('btnScanCamera')?.click();
+        }, 300);
+    }
+});
+</script>
+</body>
+</html>

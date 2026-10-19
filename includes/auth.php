@@ -17,7 +17,6 @@ if (session_status() === PHP_SESSION_NONE) {
 
 require_once __DIR__ . '/../config/database.php';
 
-// --- CSRF Protection ---
 function csrf_token(): string {
     if (empty($_SESSION['csrf_token'])) {
         $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
@@ -45,7 +44,6 @@ function validate_csrf(): bool {
     return false;
 }
 
-// --- Rate Limiting ---
 function client_ip(): string {
     return $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
 }
@@ -93,7 +91,6 @@ function clear_rate_limit(PDO $pdo, string $action, string $identifier): void {
     $pdo->prepare('DELETE FROM rate_limits WHERE rate_key = ?')->execute([$rateKey]);
 }
 
-// --- Email Delivery (SMTP / Native) ---
 function send_smtp_email(string $to, string $subject, string $body): bool {
     $host = getenv('SMTP_HOST') ?: '';
     if ($host === '') {
