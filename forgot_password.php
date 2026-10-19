@@ -7,10 +7,16 @@ $error = '';
 $success = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $action = $_POST['action'] ?? '';
+    if (!validate_csrf()) {
+        $error = 'Sesi tidak valid atau telah kedaluwarsa. Silakan muat ulang halaman.';
+        if (isset($_POST['action']) && $_POST['action'] === 'verify_reset') {
+            $step = 'verify';
+        }
+    } else {
+        $action = $_POST['action'] ?? '';
 
-    if ($action === 'send_code') {
-        $email = $_POST['email'] ?? '';
+        if ($action === 'send_code') {
+            $email = $_POST['email'] ?? '';
         $sendError = send_reset_code($pdo, $email);
         if ($sendError) {
             $error = $sendError;
@@ -39,6 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
+}
 
 $pageTitle = 'Lupa Password - glossa';
 require_once __DIR__ . '/includes/header.php';
@@ -57,6 +64,7 @@ require_once __DIR__ . '/includes/header.php';
         <?php endif; ?>
 
         <form method="POST" action="forgot_password.php?step=verify" class="auth-form">
+            <?= csrf_field() ?>
             <input type="hidden" name="action" value="verify_reset">
             <?php if (empty($_SESSION['reset_email'])): ?>
                 <div class="form-group">
@@ -72,12 +80,22 @@ require_once __DIR__ . '/includes/header.php';
 
             <div class="form-group">
                 <label for="new_password">Password Baru (min. 6 karakter)</label>
-                <input type="password" id="new_password" name="new_password" minlength="6" required>
+                <div class="password-input-wrapper">
+                    <input type="password" id="new_password" name="new_password" minlength="6" required>
+                    <button type="button" class="btn-toggle-password" aria-label="Lihat password" title="Lihat password">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    </button>
+                </div>
             </div>
 
             <div class="form-group">
                 <label for="confirm_password">Konfirmasi Password Baru</label>
-                <input type="password" id="confirm_password" name="confirm_password" minlength="6" required>
+                <div class="password-input-wrapper">
+                    <input type="password" id="confirm_password" name="confirm_password" minlength="6" required>
+                    <button type="button" class="btn-toggle-password" aria-label="Lihat password" title="Lihat password">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    </button>
+                </div>
             </div>
 
             <button type="submit" class="btn btn-primary">Simpan Password Baru</button>
@@ -94,6 +112,7 @@ require_once __DIR__ . '/includes/header.php';
         <?php endif; ?>
 
         <form method="POST" action="forgot_password.php" class="auth-form">
+            <?= csrf_field() ?>
             <input type="hidden" name="action" value="send_code">
             <div class="form-group">
                 <label for="email">Email Terdaftar</label>

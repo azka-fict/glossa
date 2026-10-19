@@ -4,6 +4,7 @@ USE glossa;
 CREATE TABLE IF NOT EXISTS users (
     id VARCHAR(36) NOT NULL PRIMARY KEY,
     email VARCHAR(255) NOT NULL UNIQUE,
+    email_verified_at DATETIME NULL,
     password_hash VARCHAR(255) NOT NULL,
     name VARCHAR(100) NOT NULL,
     age INT NOT NULL DEFAULT 18,
@@ -22,6 +23,17 @@ CREATE TABLE IF NOT EXISTS password_resets (
     INDEX idx_email_code (email, code)
 );
 
+CREATE TABLE IF NOT EXISTS email_verifications (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id VARCHAR(36) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    code VARCHAR(6) NOT NULL,
+    expires_at DATETIME NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    INDEX idx_user_code (user_id, code)
+);
+
 CREATE TABLE IF NOT EXISTS scan_history (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id VARCHAR(36) NOT NULL,
@@ -34,3 +46,9 @@ CREATE TABLE IF NOT EXISTS scan_history (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     INDEX idx_user_history (user_id, created_at DESC)
 );
+
+CREATE TABLE IF NOT EXISTS rate_limits (
+    rate_key VARCHAR(100) PRIMARY KEY,
+    attempts INT NOT NULL DEFAULT 1,
+    last_attempt INT NOT NULL
+) ENGINE=InnoDB;

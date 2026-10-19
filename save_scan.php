@@ -19,7 +19,30 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $rawInput = file_get_contents('php://input');
 $data = json_decode($rawInput, true) ?? $_POST;
 
+// CSRF validation: checks header X-CSRF-Token or post csrf_token or json csrf_token
+$postToken = $data['csrf_token'] ?? '';
+if (!validate_csrf() && (!isset($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $postToken))) {
+    http_response_code(403);
+    echo json_encode(['success' => false, 'error' => 'Sesi tidak valid atau telah kedaluwarsa (CSRF). Silakan muat ulang halaman.']);
+    exit;
+}
+
+// Rate limiting: max 15 scans per minute per user
+$rateErr = check_rate_limit($pdo, 'scan', $user['id'], 15, 60);
+if ($rateErr) {
+    http_response_code(429);
+    echo json_encode(['success' => false, 'error' => $rateErr]);
+    exit;
+}
+record_rate_limit_attempt($pdo, 'scan', $user['id'], 60);
+
 $image = $data['image'] ?? null;
+if (!empty($image) && strlen($image) > 5 * 1024 * 1024) {
+    http_response_code(413);
+    echo json_encode(['success' => false, 'error' => 'Ukuran gambar terlalu besar (maksimal 5MB).']);
+    exit;
+}
+
 $skinTone = trim($data['skin_tone'] ?? 'Medium');
 $dominantColor = trim($data['dominant_color'] ?? '#e2a76f');
 $undertone = trim($data['undertone'] ?? '');

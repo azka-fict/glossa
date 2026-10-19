@@ -4,28 +4,32 @@ require_guest();
 
 $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $name = $_POST['name'] ?? '';
-    $birthDate = $_POST['birth_date'] ?? '';
-    $email = $_POST['email'] ?? '';
-    $password = $_POST['password'] ?? '';
-    $confirmPassword = $_POST['confirm_password'] ?? '';
-
-    if ($password !== $confirmPassword) {
-        $error = 'Konfirmasi password tidak cocok.';
+    if (!validate_csrf()) {
+        $error = 'Sesi tidak valid atau telah kedaluwarsa. Silakan muat ulang halaman.';
     } else {
-        $regError = register_user($pdo, $name, $email, $password, $birthDate);
-        if ($regError) {
-            $error = $regError;
+        $name = $_POST['name'] ?? '';
+        $birthDate = $_POST['birth_date'] ?? '';
+        $email = $_POST['email'] ?? '';
+        $password = $_POST['password'] ?? '';
+        $confirmPassword = $_POST['confirm_password'] ?? '';
+
+        if ($password !== $confirmPassword) {
+            $error = 'Konfirmasi password tidak cocok.';
         } else {
-            login_user($pdo, $email, $password);
-            setcookie('glossa_onboarded', '1', time() + (86400 * 365), '/');
-            if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
-                header('Content-Type: application/json');
-                echo json_encode(['success' => true]);
+            $regError = register_user($pdo, $name, $email, $password, $birthDate);
+            if ($regError) {
+                $error = $regError;
+            } else {
+                login_user($pdo, $email, $password);
+                setcookie('glossa_onboarded', '1', time() + (86400 * 365), '/');
+                if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
+                    header('Content-Type: application/json');
+                    echo json_encode(['success' => true]);
+                    exit;
+                }
+                header('Location: index.php');
                 exit;
             }
-            header('Location: index.php');
-            exit;
         }
     }
 
@@ -58,6 +62,7 @@ require_once __DIR__ . '/includes/header.php';
     <?php endif; ?>
 
     <form method="POST" action="register.php<?= !empty($_GET['redirect']) ? '?redirect=' . urlencode($_GET['redirect']) : '' ?>" class="auth-form">
+        <?= csrf_field() ?>
         <div class="form-group">
             <label for="name">Nama Lengkap</label>
             <input type="text" id="name" name="name" required autofocus value="<?= htmlspecialchars($_POST['name'] ?? '') ?>">
@@ -75,12 +80,22 @@ require_once __DIR__ . '/includes/header.php';
 
         <div class="form-group">
             <label for="password">Password (min. 6 karakter)</label>
-            <input type="password" id="password" name="password" minlength="6" required>
+            <div class="password-input-wrapper">
+                <input type="password" id="password" name="password" minlength="6" required>
+                <button type="button" class="btn-toggle-password" aria-label="Lihat password" title="Lihat password">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                </button>
+            </div>
         </div>
 
         <div class="form-group">
             <label for="confirm_password">Konfirmasi Password</label>
-            <input type="password" id="confirm_password" name="confirm_password" minlength="6" required>
+            <div class="password-input-wrapper">
+                <input type="password" id="confirm_password" name="confirm_password" minlength="6" required>
+                <button type="button" class="btn-toggle-password" aria-label="Lihat password" title="Lihat password">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                </button>
+            </div>
         </div>
 
         <button type="submit" class="btn btn-primary">Daftar</button>

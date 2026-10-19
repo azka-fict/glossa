@@ -55,6 +55,7 @@ require_once __DIR__ . '/includes/header.php';
             <div id="modalLoginPanel">
                 <div class="alert alert-error" id="modalLoginAlert" style="display: none;"></div>
                 <form id="modalLoginForm" class="auth-form" method="POST" action="login.php">
+                    <?= csrf_field() ?>
                     <div class="form-group">
                         <label for="modalLoginEmail">Email</label>
                         <input type="email" id="modalLoginEmail" name="email" required placeholder="nama@email.com">
@@ -64,7 +65,12 @@ require_once __DIR__ . '/includes/header.php';
                             <label for="modalLoginPassword">Password</label>
                             <a href="forgot_password.php" class="forgot-link">Lupa password?</a>
                         </div>
-                        <input type="password" id="modalLoginPassword" name="password" required placeholder="Masukkan password">
+                        <div class="password-input-wrapper">
+                            <input type="password" id="modalLoginPassword" name="password" required placeholder="Masukkan password">
+                            <button type="button" class="btn-toggle-password" aria-label="Lihat password" title="Lihat password">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                            </button>
+                        </div>
                     </div>
                     <button type="submit" class="btn btn-primary btn-block" id="modalLoginSubmitBtn">Masuk Sekarang</button>
                 </form>
@@ -73,6 +79,7 @@ require_once __DIR__ . '/includes/header.php';
             <div id="modalRegisterPanel" style="display: none;">
                 <div class="alert alert-error" id="modalRegisterAlert" style="display: none;"></div>
                 <form id="modalRegisterForm" class="auth-form" method="POST" action="register.php">
+                    <?= csrf_field() ?>
                     <div class="form-group">
                         <label for="modalRegName">Nama Lengkap</label>
                         <input type="text" id="modalRegName" name="name" required placeholder="Nama Anda">
@@ -87,11 +94,21 @@ require_once __DIR__ . '/includes/header.php';
                     </div>
                     <div class="form-group">
                         <label for="modalRegPassword">Password (min. 6 karakter)</label>
-                        <input type="password" id="modalRegPassword" name="password" minlength="6" required placeholder="Buat password">
+                        <div class="password-input-wrapper">
+                            <input type="password" id="modalRegPassword" name="password" minlength="6" required placeholder="Buat password">
+                            <button type="button" class="btn-toggle-password" aria-label="Lihat password" title="Lihat password">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                            </button>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="modalRegConfirm">Konfirmasi Password</label>
-                        <input type="password" id="modalRegConfirm" name="confirm_password" minlength="6" required placeholder="Ulangi password">
+                        <div class="password-input-wrapper">
+                            <input type="password" id="modalRegConfirm" name="confirm_password" minlength="6" required placeholder="Ulangi password">
+                            <button type="button" class="btn-toggle-password" aria-label="Lihat password" title="Lihat password">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                            </button>
+                        </div>
                     </div>
                     <button type="submit" class="btn btn-primary btn-block" id="modalRegisterSubmitBtn">Daftar Akun Sekarang</button>
                 </form>
@@ -117,8 +134,7 @@ require_once __DIR__ . '/includes/header.php';
                 <div class="camera-flash" id="cameraFlash"></div>
             </div>
             <div class="camera-actions" id="cameraActions">
-                <button type="button" class="btn btn-primary" id="btnCapture">Ambil Gambar & Analisis</button>
-                <button type="button" class="btn btn-secondary" id="btnStopCamera">Tutup Kamera</button>
+                <button type="button" class="btn btn-primary" id="btnCapture" style="width: 100%;">Ambil Gambar & Analisis</button>
             </div>
 
             <div id="scanResultBox" class="scan-result-card" style="display: none; margin-top: 1.25rem;">

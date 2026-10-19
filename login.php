@@ -12,13 +12,19 @@ $success = '';
 
 if (isset($_GET['reset']) && $_GET['reset'] === 'success') {
     $success = 'Password berhasil diatur ulang! Silakan masuk dengan password baru Anda.';
+} elseif (isset($_GET['msg']) && $_GET['msg'] === 'account_deleted') {
+    $success = 'Akun Anda dan seluruh data riwayat telah berhasil dihapus.';
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = $_POST['email'] ?? '';
-    $password = $_POST['password'] ?? '';
+    if (!validate_csrf()) {
+        $error = 'Sesi tidak valid atau telah kedaluwarsa. Silakan muat ulang halaman.';
+    } else {
+        $email = $_POST['email'] ?? '';
+        $password = $_POST['password'] ?? '';
 
-    $error = login_user($pdo, $email, $password) ?? '';
+        $error = login_user($pdo, $email, $password) ?? '';
+    }
 
     if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
         header('Content-Type: application/json');
@@ -64,6 +70,7 @@ require_once __DIR__ . '/includes/header.php';
     <?php endif; ?>
 
     <form method="POST" action="login.php<?= !empty($_GET['redirect']) ? '?redirect=' . urlencode($_GET['redirect']) : '' ?>" class="auth-form">
+        <?= csrf_field() ?>
         <div class="form-group">
             <label for="email">Email</label>
             <input type="email" id="email" name="email" required autofocus value="<?= htmlspecialchars($_POST['email'] ?? '') ?>">
@@ -74,7 +81,12 @@ require_once __DIR__ . '/includes/header.php';
                 <label for="password">Password</label>
                 <a href="forgot_password.php" class="forgot-link">Lupa password?</a>
             </div>
-            <input type="password" id="password" name="password" required>
+            <div class="password-input-wrapper">
+                <input type="password" id="password" name="password" required>
+                <button type="button" class="btn-toggle-password" aria-label="Lihat password" title="Lihat password">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                </button>
+            </div>
         </div>
 
         <button type="submit" class="btn btn-primary">Masuk</button>
