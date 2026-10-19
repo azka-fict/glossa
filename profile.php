@@ -2,6 +2,16 @@
 require_once __DIR__ . '/includes/auth.php';
 require_auth();
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_scan_id'])) {
+    $scanId = (int)$_POST['delete_scan_id'];
+    if ($scanId > 0) {
+        $delStmt = $pdo->prepare('DELETE FROM scan_history WHERE id = ? AND user_id = ?');
+        $delStmt->execute([$scanId, $_SESSION['user_id']]);
+    }
+    header('Location: profile.php');
+    exit;
+}
+
 $stmt = $pdo->prepare('SELECT id, name, email, birth_date, age, gender, created_at FROM users WHERE id = ?');
 $stmt->execute([$_SESSION['user_id']]);
 $user = $stmt->fetch();
@@ -54,11 +64,6 @@ require_once __DIR__ . '/includes/header.php';
                 <span class="detail-value"><?= !empty($user['created_at']) ? date('d M Y, H:i', strtotime($user['created_at'])) : '-' ?></span>
             </div>
         </div>
-
-        <div class="profile-actions">
-            <a href="index.php" class="btn btn-primary">Buka Scan Kamera</a>
-            <a href="logout.php" class="btn btn-secondary">Keluar</a>
-        </div>
     </div>
 
     <div class="history-section">
@@ -92,7 +97,18 @@ require_once __DIR__ . '/includes/header.php';
                                 </span>
                                 <span class="accuracy-pill"><?= (int)$scan['accuracy'] ?>% Akurasi</span>
                             </div>
-                            <time class="history-date"><?= date('d M Y, H:i', strtotime($scan['created_at'])) ?></time>
+                            <div class="history-header-right">
+                                <time class="history-date"><?= date('d M Y, H:i', strtotime($scan['created_at'])) ?></time>
+                                <form method="POST" action="profile.php" onsubmit="return confirm('Hapus riwayat scan ini?');" class="delete-history-form">
+                                    <input type="hidden" name="delete_scan_id" value="<?= (int)$scan['id'] ?>">
+                                    <button type="submit" class="btn-delete-history" title="Hapus riwayat" aria-label="Hapus riwayat">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="3 6 5 6 21 6"></polyline>
+                                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                        </svg>
+                                    </button>
+                                </form>
+                            </div>
                         </div>
 
                         <div class="history-card-body">

@@ -114,6 +114,7 @@ require_once __DIR__ . '/includes/header.php';
                     <div class="scanner-line"></div>
                 </div>
                 <div class="camera-status" id="cameraStatus">Menghubungkan ke kamera...</div>
+                <div class="camera-flash" id="cameraFlash"></div>
             </div>
             <div class="camera-actions" id="cameraActions">
                 <button type="button" class="btn btn-primary" id="btnCapture">Ambil Gambar & Analisis</button>

@@ -19,8 +19,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnCapture = document.getElementById('btnCapture');
     const cameraVideo = document.getElementById('cameraVideo');
     const cameraStatus = document.getElementById('cameraStatus');
+    const cameraFlash = document.getElementById('cameraFlash');
+    const scannerFrame = document.querySelector('.scanner-frame');
     const captureSuccess = document.getElementById('captureSuccess');
     let mediaStream = null;
+
+    function playShutterSound() {
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(600, ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(80, ctx.currentTime + 0.08);
+            gain.gain.setValueAtTime(0.4, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.08);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.08);
+        } catch (e) {}
+    }
 
     if (!btnScan) return;
 
@@ -38,6 +57,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function startCamera() {
         openModal(cameraModal);
+        if (scannerFrame) scannerFrame.style.display = 'block';
+        if (scanResultBox) scanResultBox.style.display = 'none';
+        if (cameraActions) cameraActions.style.display = 'flex';
         if (cameraStatus) {
             cameraStatus.style.display = 'block';
             cameraStatus.textContent = 'Menghubungkan ke kamera...';
@@ -49,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error('Browser tidak mendukung akses kamera.');
             }
             mediaStream = await navigator.mediaDevices.getUserMedia({
-                video: { facingMode: 'environment' }
+                video: { facingMode: 'user' }
             });
             if (cameraVideo) {
                 cameraVideo.srcObject = mediaStream;
@@ -72,6 +94,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (cameraVideo) {
             cameraVideo.srcObject = null;
         }
+        if (scannerFrame) scannerFrame.style.display = 'block';
+        if (scanResultBox) scanResultBox.style.display = 'none';
+        if (cameraActions) cameraActions.style.display = 'flex';
         closeModal(cameraModal);
     }
 
@@ -121,23 +146,52 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnCapture) {
         btnCapture.addEventListener('click', async () => {
             btnCapture.disabled = true;
-            btnCapture.textContent = 'Menganalisis Undertone...';
+            btnCapture.textContent = 'Menganalisis...';
 
-            let undertone = 'Warm';
-            let skinTone = 'Medium';
+            if (cameraFlash) {
+                cameraFlash.classList.add('flash');
+                setTimeout(() => cameraFlash.classList.remove('flash'), 120);
+            }
+            playShutterSound();
+
+            if (cameraVideo) {
+                cameraVideo.pause();
+            }
+            if (scannerFrame) {
+                scannerFrame.style.display = 'none';
+            }
+
             let hexColor = '#e3a86c';
+            let skinTone = 'Medium';
+            let imageData = null;
 
             if (cameraVideo && cameraVideo.videoWidth > 0 && cameraVideo.videoHeight > 0) {
                 try {
                     const canvas = document.createElement('canvas');
-                    canvas.width = cameraVideo.videoWidth;
-                    canvas.height = cameraVideo.videoHeight;
+                    const maxDim = 640;
+                    let w = cameraVideo.videoWidth;
+                    let h = cameraVideo.videoHeight;
+                    if (w > maxDim || h > maxDim) {
+                        if (w > h) {
+                            h = Math.round((h * maxDim) / w);
+                            w = maxDim;
+                        } else {
+                            w = Math.round((w * maxDim) / h);
+                            h = maxDim;
+                        }
+                    }
+                    canvas.width = w;
+                    canvas.height = h;
                     const ctx = canvas.getContext('2d');
-                    ctx.drawImage(cameraVideo, 0, 0, canvas.width, canvas.height);
+                    ctx.translate(w, 0);
+                    ctx.scale(-1, 1);
+                    ctx.drawImage(cameraVideo, 0, 0, w, h);
 
-                    const cx = Math.floor(canvas.width / 2);
-                    const cy = Math.floor(canvas.height / 2);
-                    const pixelData = ctx.getImageData(cx - 15, cy - 15, 30, 30).data;
+                    imageData = canvas.toDataURL('image/jpeg', 0.85);
+
+                    const cx = Math.floor(w / 2);
+                    const cy = Math.floor(h / 2);
+                    const pixelData = ctx.getImageData(Math.max(0, cx - 15), Math.max(0, cy - 15), 30, 30).data;
 
                     let r = 0, g = 0, b = 0, count = 0;
                     for (let i = 0; i < pixelData.length; i += 4) {
@@ -146,41 +200,20 @@ document.addEventListener('DOMContentLoaded', () => {
                         b += pixelData[i + 2];
                         count++;
                     }
-                    r = Math.round(r / count);
-                    g = Math.round(g / count);
-                    b = Math.round(b / count);
-
-                    hexColor = '#' + [r, g, b].map(x => x.toString(16).padStart(2, '0')).join('');
-
-                    if (r - b > 45 && g > b) {
-                        undertone = 'Warm';
-                    } else if (b > 0.85 * r || r - g < 15) {
-                        undertone = 'Cool';
-                    } else {
-                        undertone = 'Neutral';
+                    if (count > 0) {
+                        r = Math.round(r / count);
+                        g = Math.round(g / count);
+                        b = Math.round(b / count);
+                        hexColor = '#' + [r, g, b].map(x => x.toString(16).padStart(2, '0')).join('');
+                        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+                        if (brightness > 180) skinTone = 'Fair';
+                        else if (brightness > 140) skinTone = 'Medium';
+                        else if (brightness > 95) skinTone = 'Tan';
+                        else skinTone = 'Deep';
                     }
-
-                    const brightness = (r * 299 + g * 587 + b * 114) / 1000;
-                    if (brightness > 180) skinTone = 'Fair';
-                    else if (brightness > 140) skinTone = 'Medium';
-                    else if (brightness > 95) skinTone = 'Tan';
-                    else skinTone = 'Deep';
                 } catch (e) {
-                    console.warn('Gagal membaca canvas video, menggunakan deteksi otomatis:', e);
+                    console.warn('Gagal membaca canvas video:', e);
                 }
-            } else {
-                const tones = ['Warm', 'Cool', 'Neutral'];
-                undertone = tones[Math.floor(Math.random() * tones.length)];
-            }
-
-            const accuracy = Math.floor(Math.random() * 6) + 93;
-            let rec = '';
-            if (undertone === 'Warm') {
-                rec = 'Warna Terbaik: Terracotta, Peach, Mustard, Olive Green, Warm Gold. Lipstik: Coral, Brick Red, Warm Nude.';
-            } else if (undertone === 'Cool') {
-                rec = 'Warna Terbaik: Berry, Emerald Green, Royal Blue, Silver, Lavender. Lipstik: Rose Pink, Plum, Berry Red.';
-            } else {
-                rec = 'Warna Terbaik: Dusty Pink, Jade Green, Soft Navy, Rose Gold, Off-White. Lipstik: Soft Mauve, Peachy Nude, Classic Red.';
             }
 
             try {
@@ -188,36 +221,36 @@ document.addEventListener('DOMContentLoaded', () => {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        undertone,
+                        image: imageData,
                         skin_tone: skinTone,
-                        accuracy,
-                        recommendations: rec,
                         dominant_color: hexColor
                     })
                 });
                 const res = await response.json();
                 if (!res.success) {
-                    throw new Error(res.error || 'Gagal menyimpan.');
+                    throw new Error(res.error || 'Gagal menganalisis gambar.');
                 }
+
+                const scan = res.scan;
+                if (resUndertoneBadge) {
+                    resUndertoneBadge.textContent = `${scan.undertone} Undertone`;
+                    resUndertoneBadge.className = `undertone-badge ${scan.undertone.toLowerCase()}`;
+                }
+                if (resAccuracyBadge) {
+                    resAccuracyBadge.textContent = `${scan.accuracy}% Akurasi`;
+                }
+                if (resRecommendation) {
+                    resRecommendation.textContent = scan.recommendations;
+                }
+                if (cameraActions) cameraActions.style.display = 'none';
+                if (scanResultBox) scanResultBox.style.display = 'block';
             } catch (err) {
-                console.error('Error menyimpan scan:', err);
+                console.error('Error memproses scan:', err);
+                alert(err.message || 'Terjadi kesalahan saat memproses scan.');
+            } finally {
+                btnCapture.disabled = false;
+                btnCapture.textContent = 'Ambil Gambar & Analisis';
             }
-
-            if (resUndertoneBadge) {
-                resUndertoneBadge.textContent = `${undertone} Undertone`;
-                resUndertoneBadge.className = `undertone-badge ${undertone.toLowerCase()}`;
-            }
-            if (resAccuracyBadge) {
-                resAccuracyBadge.textContent = `${accuracy}% Akurasi`;
-            }
-            if (resRecommendation) {
-                resRecommendation.textContent = rec;
-            }
-            if (cameraActions) cameraActions.style.display = 'none';
-            if (scanResultBox) scanResultBox.style.display = 'block';
-
-            btnCapture.disabled = false;
-            btnCapture.textContent = 'Ambil Gambar & Analisis';
         });
     }
 
@@ -225,6 +258,8 @@ document.addEventListener('DOMContentLoaded', () => {
         btnScanAgain.addEventListener('click', () => {
             if (scanResultBox) scanResultBox.style.display = 'none';
             if (cameraActions) cameraActions.style.display = 'flex';
+            if (scannerFrame) scannerFrame.style.display = 'block';
+            if (cameraVideo) cameraVideo.play();
         });
     }
 
