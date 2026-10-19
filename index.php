@@ -132,6 +132,22 @@ require_once __DIR__ . '/includes/header.php';
                 </div>
                 <div class="camera-status" id="cameraStatus">Menghubungkan ke kamera...</div>
                 <div class="camera-flash" id="cameraFlash"></div>
+
+                <div class="analyzing-overlay" id="analyzingOverlay" style="display: none;">
+                    <div class="analyzing-grid"></div>
+                    <div class="analyzing-laser"></div>
+                    <div class="analyzing-hud">
+                        <div class="hud-corner top-left"></div>
+                        <div class="hud-corner top-right"></div>
+                        <div class="hud-corner bottom-left"></div>
+                        <div class="hud-corner bottom-right"></div>
+                        <div class="analyzing-scanner-circle"></div>
+                    </div>
+                    <div class="analyzing-badge">
+                        <span class="analyzing-spinner"></span>
+                        <span id="analyzingText" class="analyzing-text">Menganalisis dengan AI...</span>
+                    </div>
+                </div>
             </div>
             <div class="camera-actions" id="cameraActions">
                 <button type="button" class="btn btn-primary" id="btnCapture" style="width: 100%;">Ambil Gambar & Analisis</button>
@@ -140,11 +156,12 @@ require_once __DIR__ . '/includes/header.php';
             <div id="scanResultBox" class="scan-result-card" style="display: none; margin-top: 1.25rem;">
                 <div class="scan-result-header">
                     <span class="undertone-badge" id="resUndertoneBadge">Warm Undertone</span>
+                    <span class="shape-badge" id="resFaceShapeBadge" style="display: none;">Oval Face</span>
                     <span class="accuracy-pill" id="resAccuracyBadge">96% Akurasi</span>
                 </div>
                 <p id="resRecommendation" class="scan-result-desc"></p>
                 <div class="scan-result-footer" style="display: flex; gap: 0.75rem; justify-content: center; margin-top: 1rem;">
-                    <a href="profile.php" class="btn btn-primary btn-sm">Lihat Riwayat di Profil</a>
+                    <a href="profile.php" class="btn btn-primary btn-sm">Lihat Detail di Profil</a>
                     <button type="button" class="btn btn-secondary btn-sm" id="btnScanAgain">Scan Ulang</button>
                 </div>
             </div>

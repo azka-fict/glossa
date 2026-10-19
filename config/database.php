@@ -63,3 +63,7 @@ try {
         last_attempt INT NOT NULL
     ) ENGINE=InnoDB");
 } catch (PDOException $e) {}
+try {
+    $pdo->exec("ALTER TABLE scan_history ADD COLUMN face_shape VARCHAR(50) NULL AFTER undertone");
+} catch (PDOException $e) {}
+

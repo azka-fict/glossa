@@ -111,6 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (cameraVideo) {
             cameraVideo.srcObject = null;
         }
+        stopAnalyzing();
         if (scannerFrame) scannerFrame.style.display = 'block';
         if (scanResultBox) scanResultBox.style.display = 'none';
         if (cameraActions) cameraActions.style.display = 'flex';
@@ -153,14 +154,44 @@ document.addEventListener('DOMContentLoaded', () => {
     const cameraActions = document.getElementById('cameraActions');
     const scanResultBox = document.getElementById('scanResultBox');
     const resUndertoneBadge = document.getElementById('resUndertoneBadge');
+    const resFaceShapeBadge = document.getElementById('resFaceShapeBadge');
     const resAccuracyBadge = document.getElementById('resAccuracyBadge');
     const resRecommendation = document.getElementById('resRecommendation');
     const btnScanAgain = document.getElementById('btnScanAgain');
+
+    const analyzingOverlay = document.getElementById('analyzingOverlay');
+    const analyzingText = document.getElementById('analyzingText');
+    let analyzingInterval = null;
+
+    function startAnalyzing() {
+        if (!analyzingOverlay) return;
+        analyzingOverlay.style.display = 'flex';
+        const steps = [
+            'Menganalisis dengan AI...',
+            'Mendeteksi kontur & bentuk wajah...',
+            'Menganalisis spektrum warna kulit...',
+            'Menghitung akurasi undertone...'
+        ];
+        let idx = 0;
+        if (analyzingText) analyzingText.textContent = steps[0];
+        clearInterval(analyzingInterval);
+        analyzingInterval = setInterval(() => {
+            idx = (idx + 1) % steps.length;
+            if (analyzingText) analyzingText.textContent = steps[idx];
+        }, 750);
+    }
+
+    function stopAnalyzing() {
+        clearInterval(analyzingInterval);
+        analyzingInterval = null;
+        if (analyzingOverlay) analyzingOverlay.style.display = 'none';
+    }
 
     if (btnCapture) {
         btnCapture.addEventListener('click', async () => {
             btnCapture.disabled = true;
             btnCapture.textContent = 'Menganalisis...';
+            startAnalyzing();
 
             if (cameraFlash) {
                 cameraFlash.classList.add('flash');
@@ -255,11 +286,20 @@ document.addEventListener('DOMContentLoaded', () => {
                     resUndertoneBadge.textContent = `${scan.undertone} Undertone`;
                     resUndertoneBadge.className = `undertone-badge ${scan.undertone.toLowerCase()}`;
                 }
+                if (resFaceShapeBadge) {
+                    if (scan.face_shape) {
+                        resFaceShapeBadge.textContent = `${scan.face_shape} Face`;
+                        resFaceShapeBadge.style.display = 'inline-flex';
+                    } else {
+                        resFaceShapeBadge.style.display = 'none';
+                    }
+                }
                 if (resAccuracyBadge) {
                     resAccuracyBadge.textContent = `${scan.accuracy}% Akurasi`;
                 }
                 if (resRecommendation) {
-                    resRecommendation.textContent = scan.recommendations;
+                    const safeSkin = (scan.skin_tone || 'Medium').replace(/[^\w\s-]/g, '');
+                    resRecommendation.innerHTML = `Tone Kulit: <strong>${safeSkin}</strong> &bull; Rekomendasi lengkap tersimpan di profil.`;
                 }
                 if (cameraActions) cameraActions.style.display = 'none';
                 if (scanResultBox) scanResultBox.style.display = 'block';
@@ -267,6 +307,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error('Error memproses scan:', err);
                 alert(err.message || 'Terjadi kesalahan saat memproses scan.');
             } finally {
+                stopAnalyzing();
                 btnCapture.disabled = false;
                 btnCapture.textContent = 'Ambil Gambar & Analisis';
             }
@@ -275,7 +316,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (btnScanAgain) {
         btnScanAgain.addEventListener('click', () => {
+            stopAnalyzing();
             if (scanResultBox) scanResultBox.style.display = 'none';
+            if (resFaceShapeBadge) resFaceShapeBadge.style.display = 'none';
             if (cameraActions) cameraActions.style.display = 'flex';
             if (scannerFrame) scannerFrame.style.display = 'block';
             if (cameraVideo) cameraVideo.play();

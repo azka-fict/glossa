@@ -38,6 +38,7 @@ CREATE TABLE IF NOT EXISTS scan_history (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id VARCHAR(36) NOT NULL,
     undertone VARCHAR(50) NOT NULL,
+    face_shape VARCHAR(50) NULL,
     skin_tone VARCHAR(50) NULL,
     accuracy INT NOT NULL DEFAULT 95,
     recommendations TEXT NULL,

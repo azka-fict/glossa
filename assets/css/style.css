@@ -997,6 +997,141 @@ body {
     transition: none;
 }
 
+/* Analyzing AI Scanner Overlay */
+.analyzing-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.45);
+    backdrop-filter: blur(2px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 12;
+    overflow: hidden;
+    animation: fadeIn 0.2s ease-out;
+}
+
+.analyzing-grid {
+    position: absolute;
+    inset: 0;
+    background-image: 
+        linear-gradient(rgba(56, 189, 248, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(56, 189, 248, 0.08) 1px, transparent 1px);
+    background-size: 24px 24px;
+    pointer-events: none;
+}
+
+.analyzing-laser {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent 0%, #38bdf8 30%, #ec4899 70%, transparent 100%);
+    box-shadow: 0 0 16px rgba(56, 189, 248, 0.9), 0 0 28px rgba(236, 72, 153, 0.5);
+    animation: laserScan 1.6s ease-in-out infinite alternate;
+}
+
+@keyframes laserScan {
+    0% { top: 12%; opacity: 0.7; }
+    50% { opacity: 1; }
+    100% { top: 88%; opacity: 0.7; }
+}
+
+.analyzing-hud {
+    position: relative;
+    width: min(65%, 230px);
+    aspect-ratio: 1 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.analyzing-scanner-circle {
+    width: 90%;
+    height: 90%;
+    border-radius: 50%;
+    border: 2px dashed rgba(56, 189, 248, 0.6);
+    animation: rotateCircle 8s linear infinite;
+}
+
+@keyframes rotateCircle {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.hud-corner {
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    border-color: #38bdf8;
+    border-style: solid;
+    border-width: 0;
+}
+
+.hud-corner.top-left {
+    top: 0;
+    left: 0;
+    border-top-width: 3px;
+    border-left-width: 3px;
+    border-top-left-radius: 6px;
+}
+
+.hud-corner.top-right {
+    top: 0;
+    right: 0;
+    border-top-width: 3px;
+    border-right-width: 3px;
+    border-top-right-radius: 6px;
+}
+
+.hud-corner.bottom-left {
+    bottom: 0;
+    left: 0;
+    border-bottom-width: 3px;
+    border-left-width: 3px;
+    border-bottom-left-radius: 6px;
+}
+
+.hud-corner.bottom-right {
+    bottom: 0;
+    right: 0;
+    border-bottom-width: 3px;
+    border-right-width: 3px;
+    border-bottom-right-radius: 6px;
+}
+
+.analyzing-badge {
+    margin-top: 1.25rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: rgba(15, 23, 42, 0.85);
+    border: 1px solid rgba(56, 189, 248, 0.35);
+    backdrop-filter: blur(8px);
+    color: #ffffff;
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 0.45rem 1rem;
+    border-radius: 9999px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+    z-index: 2;
+}
+
+.analyzing-spinner {
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(255, 255, 255, 0.25);
+    border-top-color: #38bdf8;
+    border-radius: 50%;
+    animation: spin 0.75s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
 .camera-actions {
     display: flex;
     justify-content: center;
@@ -1521,6 +1656,18 @@ body {
     border-color: #a7f3d0;
 }
 
+.shape-badge {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.82rem;
+    font-weight: 700;
+    padding: 0.28rem 0.7rem;
+    border-radius: 9999px;
+    background: #ede9fe;
+    color: #5b21b6;
+    border: 1px solid #ddd6fe;
+}
+
 .accuracy-pill {
     font-size: 0.8rem;
     font-weight: 600;
@@ -1684,6 +1831,49 @@ body {
     background: #ecfdf5;
     color: #065f46;
     border-color: #a7f3d0;
+}
+
+.shape-badge-lg {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.92rem;
+    font-weight: 700;
+    padding: 0.35rem 0.85rem;
+    border-radius: 9999px;
+    background: #ede9fe;
+    color: #5b21b6;
+    border: 1px solid #ddd6fe;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.face-shape-tips-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.85rem;
+    margin-top: 0.85rem;
+}
+
+.face-shape-tip-card {
+    background: #f8fafc;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 0.85rem 1rem;
+}
+
+.face-shape-tip-card .tip-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.85rem;
+    color: var(--text-main);
+    margin-bottom: 0.35rem;
+}
+
+.face-shape-tip-card .tip-card-text {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    line-height: 1.45;
+    margin: 0;
 }
 
 .accuracy-pill-lg {

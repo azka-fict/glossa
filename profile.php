@@ -74,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 }
 
-$scanStmt = $pdo->prepare('SELECT id, undertone, skin_tone, accuracy, recommendations, dominant_color, created_at FROM scan_history WHERE user_id = ? ORDER BY created_at DESC');
+$scanStmt = $pdo->prepare('SELECT id, undertone, face_shape, skin_tone, accuracy, recommendations, dominant_color, created_at FROM scan_history WHERE user_id = ? ORDER BY created_at DESC');
 $scanStmt->execute([$_SESSION['user_id']]);
 $scanHistory = $scanStmt->fetchAll();
 
@@ -233,6 +233,13 @@ require_once __DIR__ . '/includes/header.php';
             <div class="history-list">
                 <?php foreach ($scanHistory as $scan): 
                     $undertoneClass = strtolower($scan['undertone']);
+                    $faceShapeVal = $scan['face_shape'] ?? '';
+                    if (empty($faceShapeVal) && !empty($scan['recommendations'])) {
+                        if (preg_match('/Bentuk Wajah\s+([A-Za-z]+):/i', $scan['recommendations'], $m)) {
+                            $faceShapeVal = ucfirst(strtolower($m[1]));
+                        }
+                    }
+                    $scan['face_shape'] = $faceShapeVal;
                     $scanJson = htmlspecialchars(json_encode($scan), ENT_QUOTES, 'UTF-8');
                 ?>
                     <div class="history-card clickable-history-card" onclick="openScanDetailModal(this)" data-scan='<?= $scanJson ?>' tabindex="0" role="button" aria-label="Lihat detail hasil scan">
@@ -241,6 +248,11 @@ require_once __DIR__ . '/includes/header.php';
                                 <span class="undertone-badge <?= htmlspecialchars($undertoneClass) ?>">
                                     <?= htmlspecialchars($scan['undertone']) ?> Undertone
                                 </span>
+                                <?php if (!empty($faceShapeVal)): ?>
+                                    <span class="shape-badge">
+                                        <?= htmlspecialchars($faceShapeVal) ?> Face
+                                    </span>
+                                <?php endif; ?>
                                 <span class="accuracy-pill"><?= (int)$scan['accuracy'] ?>% Akurasi</span>
                             </div>
                             <div class="history-header-right">
@@ -264,6 +276,9 @@ require_once __DIR__ . '/includes/header.php';
                                     <span class="color-indicator" style="background-color: <?= htmlspecialchars($scan['dominant_color']) ?>;" title="Sampel Warna: <?= htmlspecialchars($scan['dominant_color']) ?>"></span>
                                 <?php endif; ?>
                                 <span class="skin-tone-label">Tone: <strong><?= htmlspecialchars($scan['skin_tone'] ?? 'Medium') ?></strong></span>
+                                <?php if (!empty($faceShapeVal)): ?>
+                                    <span class="face-shape-meta">&bull; Wajah: <strong><?= htmlspecialchars($faceShapeVal) ?></strong></span>
+                                <?php endif; ?>
                                 <span class="view-detail-hint">
                                     Lihat Detail
                                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -397,6 +412,7 @@ require_once __DIR__ . '/includes/header.php';
             <div class="scan-detail-hero">
                 <div class="hero-left">
                     <span class="undertone-badge-lg" id="modalUndertoneBadge">Warm Undertone</span>
+                    <span class="shape-badge-lg" id="modalFaceShapeBadge" style="display: none;">Oval Face</span>
                     <span class="accuracy-pill-lg" id="modalAccuracy">96% Akurasi</span>
                 </div>
                 <div class="hero-right">
@@ -441,6 +457,35 @@ require_once __DIR__ . '/includes/header.php';
                     Rekomendasi Lipstik & Makeup
                 </h4>
                 <div class="swatches-grid" id="modalLipstickSwatches"></div>
+            </div>
+
+            <div class="detail-section" id="modalFaceShapeSection" style="display: none;">
+                <h4 class="detail-section-title">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                        <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                        <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                    </svg>
+                    Analisis Bentuk Wajah (<span id="modalFaceShapeTitle">Oval</span>)
+                </h4>
+                <p class="detail-desc" id="modalFaceShapeDesc"></p>
+                <div class="face-shape-tips-grid">
+                    <div class="face-shape-tip-card">
+                        <div class="tip-card-header">
+                            <span class="tip-icon">👓</span>
+                            <strong>Model Kacamata Terbaik</strong>
+                        </div>
+                        <p id="modalEyewearTip" class="tip-card-text">-</p>
+                    </div>
+                    <div class="face-shape-tip-card">
+                        <div class="tip-card-header">
+                            <span class="tip-icon">💇</span>
+                            <strong>Gaya Rambut & Hijab</strong>
+                        </div>
+                        <p id="modalHairstyleTip" class="tip-card-text">-</p>
+                    </div>
+                </div>
             </div>
 
             <div class="modal-detail-footer">
@@ -627,6 +672,39 @@ const undertoneDetailsMap = {
     }
 };
 
+const faceShapeDetailsMap = {
+    'Oval': {
+        desc: 'Bentuk wajah oval memiliki proporsi alami yang seimbang, dahi sedikit lebih lebar dari dagu, dengan garis rahang melengkung lembut.',
+        eyewear: 'Sangat fleksibel; hampir semua model bingkai cocok, terutama kacamata geometris, rectangular, atau cat-eye seimbang.',
+        hair: 'Potongan layer panjang, bob sebahu bertekstur, atau belah samping natural.'
+    },
+    'Round': {
+        desc: 'Bentuk wajah bulat memiliki panjang dan lebar wajah relatif sama dengan pipi penuh serta kontur rahang membulat.',
+        eyewear: 'Bingkai bersudut tegas seperti rectangular (persegi panjang), wayfarer, atau cat-eye tinggi untuk memberi siluet tirus.',
+        hair: 'Layer bertingkat panjang di bawah dagu, volume pada mahkota kepala, atau poni samping membingkai pipi.'
+    },
+    'Square': {
+        desc: 'Bentuk wajah kotak memiliki garis rahang tegas dan lebar dahi, pipi, serta rahang yang simetris horizontal.',
+        eyewear: 'Bingkai bulat (round), oval, atau kurva lembut untuk melembutkan ketegasan garis rahang.',
+        hair: 'Gaya soft waves (ombak lembut), poni tirai (curtain bangs), atau layer bertingkat.'
+    },
+    'Heart': {
+        desc: 'Bentuk wajah hati memiliki dahi yang relatif lebar, tulang pipi menonjol, dan dagu yang meruncing manis.',
+        eyewear: 'Bingkai aviator, bulat tipis, atau kacamata dengan bagian bawah lebih lebar untuk menyeimbangkan area dagu.',
+        hair: 'Bob sebahu dengan volume di dekat dagu atau curtain bangs membingkai dahi.'
+    },
+    'Diamond': {
+        desc: 'Bentuk wajah diamond memiliki tulang pipi tinggi dan menonjol, dengan dahi serta dagu yang lebih ramping.',
+        eyewear: 'Bingkai cat-eye melengkung halus, kacamata oval tanpa bingkai tebal (rimless), atau model browline.',
+        hair: 'Potongan bob bervolume di dagu, poni samping lembut, atau layer sebahu.'
+    },
+    'Oblong': {
+        desc: 'Bentuk wajah oblong (panjang) memiliki panjang wajah lebih dominan dengan garis pipi cenderung lurus vertikal.',
+        eyewear: 'Bingkai lebar / oversized atau bingkai dengan ornamen dekoratif pada pelipis untuk menambah kesan proporsional.',
+        hair: 'Poni penuh (blunt bangs) di dahi atau rambut bergelombang mekar di sisi samping.'
+    }
+};
+
 function openScanDetailModal(cardEl) {
     const raw = cardEl.getAttribute('data-scan');
     if (!raw) return;
@@ -645,6 +723,28 @@ function openScanDetailModal(cardEl) {
         const uBadge = document.getElementById('modalUndertoneBadge');
         uBadge.textContent = `${undertone} Undertone`;
         uBadge.className = `undertone-badge-lg ${undertone.toLowerCase()}`;
+
+        // Face Shape handling
+        const faceShape = scan.face_shape || '';
+        const fsBadge = document.getElementById('modalFaceShapeBadge');
+        const fsSection = document.getElementById('modalFaceShapeSection');
+        if (faceShape) {
+            if (fsBadge) {
+                fsBadge.textContent = `${faceShape} Face`;
+                fsBadge.style.display = 'inline-flex';
+            }
+            if (fsSection) {
+                fsSection.style.display = 'block';
+                const fsInfo = faceShapeDetailsMap[faceShape] || faceShapeDetailsMap['Oval'];
+                document.getElementById('modalFaceShapeTitle').textContent = `${faceShape} Face`;
+                document.getElementById('modalFaceShapeDesc').textContent = fsInfo.desc;
+                document.getElementById('modalEyewearTip').textContent = fsInfo.eyewear;
+                document.getElementById('modalHairstyleTip').textContent = fsInfo.hair;
+            }
+        } else {
+            if (fsBadge) fsBadge.style.display = 'none';
+            if (fsSection) fsSection.style.display = 'none';
+        }
 
         document.getElementById('modalAccuracy').textContent = `${scan.accuracy || 95}% Akurasi`;
         document.getElementById('modalSkinTone').textContent = scan.skin_tone || 'Medium';
