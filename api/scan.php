@@ -113,6 +113,9 @@ if (!empty($handles)) {
         }
     } while ($running > 0 && $status === CURLM_OK);
 
+    $rfUndertoneError = '';
+    $rfFaceShapeError = '';
+
     if (isset($handles['undertone'])) {
         $ch = $handles['undertone'];
         $res = curl_multi_getcontent($ch);
@@ -129,6 +132,9 @@ if (!empty($handles)) {
                 $undertone = ucfirst(strtolower($rf['predictions'][0]['class']));
                 if (isset($rf['predictions'][0]['confidence'])) $accuracy = (int)round($rf['predictions'][0]['confidence'] * 100);
             }
+        } elseif ($res) {
+            $errObj = json_decode($res, true);
+            $rfUndertoneError = $errObj['message'] ?? ($errObj['error']['message'] ?? ($errObj['error'] ?? ''));
         }
     }
 
@@ -146,6 +152,9 @@ if (!empty($handles)) {
             } elseif (!empty($rf['predictions'][0]['class'])) {
                 $faceShape = ucfirst(strtolower($rf['predictions'][0]['class']));
             }
+        } elseif ($res) {
+            $errObj = json_decode($res, true);
+            $rfFaceShapeError = $errObj['message'] ?? ($errObj['error']['message'] ?? ($errObj['error'] ?? ''));
         }
     }
 
@@ -154,18 +163,26 @@ if (!empty($handles)) {
 
 if (!empty($undertoneModel) && empty($undertone)) {
     http_response_code(422);
+    $errMsg = 'AI Roboflow tidak dapat mendeteksi undertone kulit. Pastikan wajah terlihat jelas dan pencahayaan terang.';
+    if (!empty($rfUndertoneError)) {
+        $errMsg = 'Roboflow Undertone (' . $rfUndertoneError . '). Silakan train model di dashboard Roboflow terlebih dahulu.';
+    }
     echo json_encode([
         'success' => false,
-        'error' => 'AI Roboflow tidak dapat mendeteksi undertone kulit. Pastikan wajah terlihat jelas dan pencahayaan terang.'
+        'error' => $errMsg
     ]);
     exit;
 }
 
 if (!empty($faceShapeModel) && empty($faceShape)) {
     http_response_code(422);
+    $errMsg = 'AI Roboflow tidak dapat mendeteksi bentuk wajah. Pastikan seluruh bagian wajah dan rahang berada di dalam bingkai.';
+    if (!empty($rfFaceShapeError)) {
+        $errMsg = 'Roboflow Face Shape (' . $rfFaceShapeError . '). Silakan train model di dashboard Roboflow terlebih dahulu.';
+    }
     echo json_encode([
         'success' => false,
-        'error' => 'AI Roboflow tidak dapat mendeteksi bentuk wajah. Pastikan seluruh bagian wajah dan rahang berada di dalam bingkai.'
+        'error' => $errMsg
     ]);
     exit;
 }
