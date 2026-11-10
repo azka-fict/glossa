@@ -28,7 +28,7 @@ const GlossaApp = {
                 return this.csrfToken;
             }
         } catch (e) {
-            console.warn('Gagal mengambil CSRF token:', e);
+            console.warn('Failed to fetch CSRF token:', e);
         }
         return '';
     },
@@ -42,7 +42,7 @@ const GlossaApp = {
             }
             return data.authenticated ? data.user : null;
         } catch (e) {
-            console.warn('Gagal mengecek sesi login:', e);
+            console.warn('Failed to check login session:', e);
             return null;
         }
     },
@@ -61,16 +61,21 @@ const GlossaApp = {
 
         if (navLinks) {
             if (user) {
+                const userName = user.name || 'Profile';
                 navLinks.innerHTML = `
                     <a href="index.html" class="nav-link ${currentPath === 'index.html' || currentPath === '' ? 'active' : ''}">Dashboard</a>
-                    <a href="profile.html" class="nav-link ${currentPath === 'profile.html' ? 'active' : ''}">Profile</a>
-                    <a href="#" id="navLogoutBtn" class="nav-link">Keluar</a>
+                    <a href="profile.html" class="icon-btn ${currentPath === 'profile.html' ? 'active' : ''}" aria-label="Profile" title="${userName}">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+                    </a>
+                    <a href="#" id="navLogoutBtn" class="icon-btn" aria-label="Sign Out" title="Sign Out">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                    </a>
                 `;
                 const logoutBtn = document.getElementById('navLogoutBtn');
                 if (logoutBtn) {
                     logoutBtn.addEventListener('click', (e) => {
                         e.preventDefault();
-                        if (confirm('Apakah Anda yakin ingin keluar?')) {
+                        if (confirm('Are you sure you want to sign out?')) {
                             GlossaApp.logout();
                         }
                     });
@@ -78,7 +83,7 @@ const GlossaApp = {
             } else {
                 navLinks.innerHTML = `
                     <a href="index.html" class="nav-link ${currentPath === 'index.html' || currentPath === '' ? 'active' : ''}">Dashboard</a>
-                    <a href="login.html" class="nav-link ${currentPath === 'login.html' ? 'active' : ''}">Masuk</a>
+                    <a href="login.html" id="navLoginBtn" class="nav-link ${currentPath === 'login.html' ? 'active' : ''}">Sign In</a>
                 `;
             }
         }

@@ -1,18 +1,27 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
+<script>
+// If accessed directly, redirect to popup on index
+window.location.replace('index.html?modal=register');
+</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daftar Akun glossa</title>
-    <link rel="stylesheet" href="assets/css/style.css">
+    <title>Create Account - Glossa</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600;1,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css?v=2.9">
 </head>
 <body>
 <header class="navbar">
     <div class="nav-container">
-        <a href="index.html" class="brand">glossa</a>
+        <a href="index.html" class="brand" aria-label="Glossa">
+            <span class="brand__mark"><img src="assets/images/logo.png" alt="Glossa logo"></span>
+        </a>
         <nav class="nav-links">
             <a href="index.html" class="nav-link">Dashboard</a>
-            <a href="login.html" class="nav-link">Masuk</a>
+            <a href="login.html" class="nav-link">Sign In</a>
         </nav>
     </div>
 </header>
@@ -20,27 +29,27 @@
 
 <div class="auth-card">
     <div class="auth-tabs">
-        <a href="login.html" class="auth-tab">Masuk</a>
-        <a href="register.html" class="auth-tab active">Daftar Akun</a>
+        <a href="login.html" class="auth-tab">Sign In</a>
+        <a href="register.html" class="auth-tab active">Create Account</a>
     </div>
 
-    <h2>Daftar Akun glossa</h2>
-    <p class="subtitle">Buat akun baru untuk mulai</p>
+    <h2>Create Glossa Account</h2>
+    <p class="subtitle">Create a new account to get started</p>
 
     <div id="authAlertInfo" class="alert alert-info" style="display: none;">
-        Autentikasi Diperlukan: Silakan daftar akun atau masuk terlebih dahulu untuk menggunakan fitur scan kamera.
+        Authentication Required: Please sign in or create an account to use the camera scan feature.
     </div>
 
     <div id="authAlertError" class="alert alert-error" style="display: none;"></div>
 
     <form id="registerForm" class="auth-form">
         <div class="form-group">
-            <label for="name">Nama Lengkap</label>
-            <input type="text" id="name" name="name" required autofocus placeholder="Nama Lengkap Anda">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" name="name" required autofocus placeholder="Your full name">
         </div>
 
         <div class="form-group">
-            <label for="birth_date">Tanggal Lahir</label>
+            <label for="birth_date">Date of Birth</label>
             <input type="date" id="birth_date" name="birth_date" required>
         </div>
 
@@ -50,9 +59,9 @@
         </div>
 
         <div class="form-group">
-            <label for="password">Password (min. 6 karakter)</label>
+            <label for="password">Password (min. 6 characters)</label>
             <div class="password-input-wrapper">
-                <input type="password" id="password" name="password" minlength="6" required placeholder="Buat password">
+                <input type="password" id="password" name="password" minlength="6" required placeholder="Create password">
                 <button type="button" class="btn-toggle-password" aria-label="Lihat password" title="Lihat password">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                 </button>
@@ -60,26 +69,26 @@
         </div>
 
         <div class="form-group">
-            <label for="confirm_password">Konfirmasi Password</label>
+            <label for="confirm_password">Confirm Password</label>
             <div class="password-input-wrapper">
-                <input type="password" id="confirm_password" name="confirm_password" minlength="6" required placeholder="Ulangi password">
+                <input type="password" id="confirm_password" name="confirm_password" minlength="6" required placeholder="Repeat password">
                 <button type="button" class="btn-toggle-password" aria-label="Lihat password" title="Lihat password">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                 </button>
             </div>
         </div>
 
-        <button type="submit" id="btnSubmitRegister" class="btn btn-primary btn-block">Daftar</button>
+        <button type="submit" id="btnSubmitRegister" class="btn btn-primary btn-block">Create Account</button>
     </form>
 
     <div class="auth-footer">
-        Sudah punya akun? <a href="login.html">Masuk di sini</a>
+        Already have an account? <a href="login.html">Sign in here</a>
     </div>
 </div>
 
 </main>
 
-<script src="assets/js/app.js"></script>
+<script src="assets/js/app.js?v=2.5"></script>
 <script>
 document.addEventListener('DOMContentLoaded', async () => {
     const params = new URLSearchParams(window.location.search);
@@ -122,13 +131,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         const confirm_password = document.getElementById('confirm_password').value;
 
         if (password !== confirm_password) {
-            alertError.textContent = 'Konfirmasi password tidak cocok.';
+            alertError.textContent = 'Password confirmation does not match.';
             alertError.style.display = 'block';
             return;
         }
 
         btnSubmit.disabled = true;
-        btnSubmit.textContent = 'Mendaftarkan...';
+        btnSubmit.textContent = 'Creating account...';
 
         try {
             const res = await fetch('api/auth.php?action=register', {
@@ -138,18 +147,18 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
             const data = await res.json();
             if (data.success) {
-                const target = params.get('redirect') === 'scan' ? 'index.html?action=scan' : 'index.html';
+                const target = 'index.html';
                 window.location.href = target;
             } else {
-                alertError.textContent = data.error || 'Pendaftaran gagal.';
+                alertError.textContent = data.error || 'Registration failed.';
                 alertError.style.display = 'block';
             }
         } catch (err) {
-            alertError.textContent = 'Gagal menghubungi server. Silakan coba lagi.';
+            alertError.textContent = 'Failed to connect to server. Please try again.';
             alertError.style.display = 'block';
         } finally {
             btnSubmit.disabled = false;
-            btnSubmit.textContent = 'Daftar';
+            btnSubmit.textContent = 'Create Account';
         }
     });
 });

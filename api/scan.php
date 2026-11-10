@@ -191,27 +191,59 @@ if (empty($undertone)) {
     $undertone = 'Neutral';
 }
 
-$toneRecommendations = [
-    'Warm' => 'Warna Terbaik: Terracotta, Peach, Mustard, Olive, Warm Gold. Lipstik: Coral, Brick Red, Warm Nude.',
-    'Cool' => 'Warna Terbaik: Berry, Emerald, Royal Blue, Silver, Lavender. Lipstik: Rose Pink, Plum, Berry Red.',
-    'Neutral' => 'Warna Terbaik: Dusty Pink, Jade Green, Soft Navy, Rose Gold. Lipstik: Soft Mauve, Peachy Nude.',
+$toneDetails = [
+    'Warm' => [
+        'clothing' => 'Terracotta, Peach, Mustard, Olive, Warm Gold',
+        'lipstick' => 'Coral, Brick Red, Warm Nude',
+        'jewelry'  => 'Emas (Gold) & Tembaga hangat'
+    ],
+    'Cool' => [
+        'clothing' => 'Berry, Emerald, Royal Blue, Ice Silver, Lavender',
+        'lipstick' => 'Rose Pink, Plum, Berry Red',
+        'jewelry'  => 'Perak (Silver) & Platinum'
+    ],
+    'Neutral' => [
+        'clothing' => 'Dusty Pink, Jade Green, Soft Navy, Rose Gold',
+        'lipstick' => 'Soft Mauve, Peachy Nude, Rose Nude',
+        'jewelry'  => 'Rose Gold, Emas & Perak'
+    ],
 ];
 
-$shapeRecommendations = [
-    'Oval' => 'Bentuk Wajah Oval: Kacamata geometris / cat-eye cocok sempurna. Gaya rambut layer panjang atau bob tekstur.',
-    'Round' => 'Bentuk Wajah Bulat: Kacamata persegi (rectangular) untuk menegaskan garis wajah. Gaya rambut layer di bawah dagu.',
-    'Square' => 'Bentuk Wajah Kotak: Kacamata bulat / oval untuk melembutkan rahang. Gaya rambut soft waves atau poni samping.',
-    'Heart' => 'Bentuk Wajah Hati: Kacamata aviator / oval bawah lebar. Gaya rambut bob sebahu atau curtain bangs.',
-    'Diamond' => 'Bentuk Wajah Diamond: Kacamata cat-eye atau oval lembut. Gaya rambut bervolume di area dagu/pipi.',
-    'Oblong' => 'Bentuk Wajah Oblong: Kacamata oversized lebar. Gaya rambut berponi atau bervolume samping.',
+$shapeDetails = [
+    'Oval' => [
+        'eyewear' => 'Geometris, rectangular, atau cat-eye seimbang',
+        'hair'    => 'Layer panjang, bob bertekstur, belah samping'
+    ],
+    'Round' => [
+        'eyewear' => 'Persegi panjang (rectangular), wayfarer, sudut tegas',
+        'hair'    => 'Layer di bawah dagu, volume atas, poni samping'
+    ],
+    'Square' => [
+        'eyewear' => 'Bulat (round), oval, bingkai kurva lembut',
+        'hair'    => 'Soft waves, curtain bangs, layer bertingkat'
+    ],
+    'Heart' => [
+        'eyewear' => 'Aviator, bulat tipis, bingkai bawah lebar',
+        'hair'    => 'Bob sebahu bervolume dagu, curtain bangs'
+    ],
+    'Diamond' => [
+        'eyewear' => 'Cat-eye melengkung halus, oval rimless, browline',
+        'hair'    => 'Bob bervolume di dagu, layer sebahu'
+    ],
+    'Oblong' => [
+        'eyewear' => 'Oversized lebar, bingkai tebal samping',
+        'hair'    => 'Poni depan penuh, rambut bervolume samping'
+    ],
 ];
 
-$recs = [];
-if (!empty($undertone) && isset($toneRecommendations[$undertone])) {
-    $recs[] = $toneRecommendations[$undertone];
-}
-if (!empty($faceShape) && isset($shapeRecommendations[$faceShape])) {
-    $recs[] = $shapeRecommendations[$faceShape];
+$uRec = $toneDetails[$undertone] ?? $toneDetails['Neutral'];
+$fRec = (!empty($faceShape) && isset($shapeDetails[$faceShape])) ? $shapeDetails[$faceShape] : null;
+
+$recs = [
+    "Undertone {$undertone} - Pakaian: {$uRec['clothing']}. Lipstik: {$uRec['lipstick']}. Perhiasan: {$uRec['jewelry']}."
+];
+if ($fRec) {
+    $recs[] = "Wajah {$faceShape} - Kacamata: {$fRec['eyewear']}. Rambut: {$fRec['hair']}.";
 }
 $recommendations = implode(' ', $recs);
 
@@ -235,6 +267,10 @@ echo json_encode([
         'skin_tone' => $skinTone,
         'accuracy' => $accuracy,
         'recommendations' => $recommendations,
+        'recommendation_details' => [
+            'undertone' => $uRec,
+            'face_shape' => $fRec
+        ],
         'dominant_color' => $dominantColor,
         'created_at' => date('d M Y, H:i')
     ]

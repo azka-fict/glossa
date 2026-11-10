@@ -2,8 +2,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnScan = document.getElementById('btnScanCamera');
     const authModal = document.getElementById('authModal');
     const closeAuthModal = document.getElementById('closeAuthModal');
-    const tabLoginBtn = document.getElementById('tabLoginBtn');
-    const tabRegisterBtn = document.getElementById('tabRegisterBtn');
+    const toRegisterLink = document.getElementById('toRegisterLink');
+    const toLoginLink = document.getElementById('toLoginLink');
     const modalLoginPanel = document.getElementById('modalLoginPanel');
     const modalRegisterPanel = document.getElementById('modalRegisterPanel');
     const modalLoginForm = document.getElementById('modalLoginForm');
@@ -52,8 +52,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const isPassword = input.type === 'password';
         input.type = isPassword ? 'text' : 'password';
-        btn.setAttribute('aria-label', isPassword ? 'Sembunyikan password' : 'Lihat password');
-        btn.setAttribute('title', isPassword ? 'Sembunyikan password' : 'Lihat password');
+        btn.setAttribute('aria-label', isPassword ? 'Hide password' : 'Show password');
+        btn.setAttribute('title', isPassword ? 'Hide password' : 'Show password');
         btn.innerHTML = isPassword ? eyeOffSvg : eyeSvg;
         input.focus();
     });
@@ -79,12 +79,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (cameraActions) cameraActions.style.display = 'flex';
         if (cameraStatus) {
             cameraStatus.style.display = 'block';
-            cameraStatus.textContent = 'Menghubungkan ke kamera...';
+            cameraStatus.textContent = 'Connecting to camera...';
         }
 
         try {
             if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                throw new Error('Browser tidak mendukung akses kamera.');
+                throw new Error('Browser does not support camera access.');
             }
             mediaStream = await navigator.mediaDevices.getUserMedia({
                 video: { facingMode: 'user' }
@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Camera error:', err);
             if (cameraStatus) {
                 cameraStatus.style.display = 'block';
-                cameraStatus.textContent = 'Gagal mengakses kamera: ' + (err.message || 'Izin ditolak.');
+                cameraStatus.textContent = 'Failed to access camera: ' + (err.message || 'Permission denied.');
             }
         }
     }
@@ -111,6 +111,11 @@ document.addEventListener('DOMContentLoaded', () => {
             cameraVideo.srcObject = null;
         }
         stopAnalyzing();
+        if (btnCapture) {
+            btnCapture.disabled = false;
+            btnCapture.classList.remove('is-analyzing');
+        }
+        if (shutterLabel) shutterLabel.textContent = 'Capture Photo & Analyze';
         if (scannerFrame) scannerFrame.style.display = 'block';
         if (scanResultBox) scanResultBox.style.display = 'none';
         if (cameraActions) cameraActions.style.display = 'flex';
@@ -123,25 +128,55 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isAuth) {
             startCamera();
         } else {
+            showModalLogin();
             openModal(authModal);
         }
     });
 
-    if (tabLoginBtn && tabRegisterBtn && modalLoginPanel && modalRegisterPanel) {
-        tabLoginBtn.addEventListener('click', () => {
-            tabLoginBtn.classList.add('active');
-            tabRegisterBtn.classList.remove('active');
-            modalLoginPanel.style.display = 'block';
-            modalRegisterPanel.style.display = 'none';
-        });
+        function showModalLogin(e) {
+        if (e && e.preventDefault) e.preventDefault();
+        if (modalLoginPanel) modalLoginPanel.style.display = 'block';
+        if (modalRegisterPanel) modalRegisterPanel.style.display = 'none';
+        if (modalLoginAlert) modalLoginAlert.style.display = 'none';
+        if (modalRegisterAlert) modalRegisterAlert.style.display = 'none';
+        openModal(authModal);
+    }
 
-        tabRegisterBtn.addEventListener('click', () => {
-            tabRegisterBtn.classList.add('active');
-            tabLoginBtn.classList.remove('active');
-            modalRegisterPanel.style.display = 'block';
-            modalLoginPanel.style.display = 'none';
+    function showModalRegister(e) {
+        if (e && e.preventDefault) e.preventDefault();
+        if (modalRegisterPanel) modalRegisterPanel.style.display = 'block';
+        if (modalLoginPanel) modalLoginPanel.style.display = 'none';
+        if (modalLoginAlert) modalLoginAlert.style.display = 'none';
+        if (modalRegisterAlert) modalRegisterAlert.style.display = 'none';
+        openModal(authModal);
+    }
+
+    window.showModalLogin = showModalLogin;
+    window.showModalRegister = showModalRegister;
+
+    if (toRegisterLink) {
+        toRegisterLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            showModalRegister();
         });
     }
+
+    if (toLoginLink) {
+        toLoginLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            showModalLogin();
+        });
+    }
+
+    document.addEventListener('click', (e) => {
+        const navLogin = e.target.closest('.nav-links a[href*="login"], #navLoginBtn');
+        if (!navLogin) return;
+        const modal = document.getElementById('authModal');
+        if (modal) {
+            e.preventDefault();
+            showModalLogin();
+        }
+    });
 
     if (closeAuthModal) {
         closeAuthModal.addEventListener('click', () => closeModal(authModal));
@@ -151,12 +186,68 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const cameraActions = document.getElementById('cameraActions');
+    const shutterLabel = document.getElementById('shutterLabel');
     const scanResultBox = document.getElementById('scanResultBox');
     const resUndertoneBadge = document.getElementById('resUndertoneBadge');
     const resFaceShapeBadge = document.getElementById('resFaceShapeBadge');
     const resAccuracyBadge = document.getElementById('resAccuracyBadge');
     const resRecommendation = document.getElementById('resRecommendation');
     const btnScanAgain = document.getElementById('btnScanAgain');
+
+    const resRecGrid = document.getElementById('resRecGrid');
+    const resRecUndertoneTitle = document.getElementById('resRecUndertoneTitle');
+    const resRecClothing = document.getElementById('resRecClothing');
+    const resRecLipstick = document.getElementById('resRecLipstick');
+    const resRecJewelry = document.getElementById('resRecJewelry');
+    const resRecFaceShapeCard = document.getElementById('resRecFaceShapeCard');
+    const resRecFaceShapeTitle = document.getElementById('resRecFaceShapeTitle');
+    const resRecEyewear = document.getElementById('resRecEyewear');
+    const resRecHair = document.getElementById('resRecHair');
+
+    const defaultToneRecs = {
+        'Warm': {
+            clothing: 'Terracotta, Peach, Mustard, Olive, Warm Gold',
+            lipstick: 'Coral, Brick Red, Warm Nude',
+            jewelry: 'Emas (Gold) & Tembaga hangat'
+        },
+        'Cool': {
+            clothing: 'Berry, Emerald, Royal Blue, Ice Silver, Lavender',
+            lipstick: 'Rose Pink, Plum, Berry Red',
+            jewelry: 'Perak (Silver) & Platinum'
+        },
+        'Neutral': {
+            clothing: 'Dusty Pink, Jade Green, Soft Navy, Rose Gold',
+            lipstick: 'Soft Mauve, Peachy Nude, Rose Nude',
+            jewelry: 'Rose Gold, Emas & Perak'
+        }
+    };
+
+    const defaultShapeRecs = {
+        'Oval': {
+            eyewear: 'Geometris, rectangular, atau cat-eye seimbang',
+            hair: 'Layer panjang, bob bertekstur, belah samping'
+        },
+        'Round': {
+            eyewear: 'Persegi panjang (rectangular), wayfarer, sudut tegas',
+            hair: 'Layer di bawah dagu, volume atas, poni samping'
+        },
+        'Square': {
+            eyewear: 'Bulat (round), oval, bingkai kurva lembut',
+            hair: 'Soft waves, curtain bangs, layer bertingkat'
+        },
+        'Heart': {
+            eyewear: 'Aviator, bulat tipis, bingkai bawah lebar',
+            hair: 'Bob sebahu bervolume dagu, curtain bangs'
+        },
+        'Diamond': {
+            eyewear: 'Cat-eye melengkung halus, oval rimless, browline',
+            hair: 'Bob bervolume di dagu, layer sebahu'
+        },
+        'Oblong': {
+            eyewear: 'Oversized lebar, bingkai tebal samping',
+            hair: 'Poni depan penuh, rambut bervolume samping'
+        }
+    };
 
     const analyzingOverlay = document.getElementById('analyzingOverlay');
     const analyzingText = document.getElementById('analyzingText');
@@ -166,10 +257,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!analyzingOverlay) return;
         analyzingOverlay.style.display = 'flex';
         const steps = [
-            'Menganalisis dengan AI...',
-            'Mendeteksi kontur & bentuk wajah...',
-            'Menganalisis spektrum warna kulit...',
-            'Menghitung akurasi undertone...'
+            'Analyzing with AI...',
+            'Detecting face contours & shape...',
+            'Analyzing skin color spectrum...',
+            'Calculating undertone accuracy...'
         ];
         let idx = 0;
         if (analyzingText) analyzingText.textContent = steps[0];
@@ -189,7 +280,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnCapture) {
         btnCapture.addEventListener('click', async () => {
             btnCapture.disabled = true;
-            btnCapture.textContent = 'Menganalisis...';
+            btnCapture.classList.add('is-analyzing');
+            if (shutterLabel) shutterLabel.textContent = 'Analyzing...';
             startAnalyzing();
 
             if (cameraFlash) {
@@ -256,7 +348,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         else skinTone = 'Deep';
                     }
                 } catch (e) {
-                    console.warn('Gagal membaca canvas video:', e);
+                    console.warn('Failed to read video canvas:', e);
                 }
             }
 
@@ -280,7 +372,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 const res = await response.json();
                 if (!res.success) {
-                    throw new Error(res.error || 'Gagal menganalisis gambar.');
+                    throw new Error(res.error || 'Failed to analyze photo.');
                 }
 
                 const scan = res.scan;
@@ -301,17 +393,43 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 if (resRecommendation) {
                     const safeSkin = (scan.skin_tone || 'Medium').replace(/[^\w\s-]/g, '');
-                    resRecommendation.innerHTML = `Tone Kulit: <strong>${safeSkin}</strong> &bull; Rekomendasi lengkap tersimpan di profil.`;
+                    resRecommendation.innerHTML = `Skin Tone: <strong>${safeSkin}</strong> &bull; Panduan personal rekomendasi gaya Anda:`;
                 }
+
+                // Render detail rekomendasi Undertone & Face Shape
+                const uDetails = (scan.recommendation_details && scan.recommendation_details.undertone)
+                    || defaultToneRecs[scan.undertone]
+                    || defaultToneRecs['Neutral'];
+
+                if (resRecClothing) resRecClothing.textContent = uDetails.clothing || '-';
+                if (resRecLipstick) resRecLipstick.textContent = uDetails.lipstick || '-';
+                if (resRecJewelry) resRecJewelry.textContent = uDetails.jewelry || '-';
+                if (resRecUndertoneTitle) resRecUndertoneTitle.textContent = `Rekomendasi Undertone (${scan.undertone})`;
+
+                const fShape = scan.face_shape;
+                if (fShape) {
+                    const fDetails = (scan.recommendation_details && scan.recommendation_details.face_shape)
+                        || defaultShapeRecs[fShape]
+                        || defaultShapeRecs['Oval'];
+                    if (resRecEyewear) resRecEyewear.textContent = fDetails.eyewear || '-';
+                    if (resRecHair) resRecHair.textContent = fDetails.hair || '-';
+                    if (resRecFaceShapeTitle) resRecFaceShapeTitle.textContent = `Rekomendasi Wajah (${fShape})`;
+                    if (resRecFaceShapeCard) resRecFaceShapeCard.style.display = 'flex';
+                } else {
+                    if (resRecFaceShapeCard) resRecFaceShapeCard.style.display = 'none';
+                }
+
+                if (resRecGrid) resRecGrid.style.display = 'grid';
                 if (cameraActions) cameraActions.style.display = 'none';
                 if (scanResultBox) scanResultBox.style.display = 'block';
             } catch (err) {
                 console.error('Error memproses scan:', err);
-                alert(err.message || 'Terjadi kesalahan saat memproses scan.');
+                alert(err.message || 'An error occurred while processing scan.');
             } finally {
                 stopAnalyzing();
                 btnCapture.disabled = false;
-                btnCapture.textContent = 'Ambil Gambar & Analisis';
+                btnCapture.classList.remove('is-analyzing');
+                if (shutterLabel) shutterLabel.textContent = 'Capture Photo & Analyze';
             }
         });
     }
@@ -320,10 +438,22 @@ document.addEventListener('DOMContentLoaded', () => {
         btnScanAgain.addEventListener('click', () => {
             stopAnalyzing();
             if (scanResultBox) scanResultBox.style.display = 'none';
+            if (resRecGrid) resRecGrid.style.display = 'none';
             if (resFaceShapeBadge) resFaceShapeBadge.style.display = 'none';
             if (cameraActions) cameraActions.style.display = 'flex';
             if (scannerFrame) scannerFrame.style.display = 'block';
+            if (btnCapture) {
+                btnCapture.disabled = false;
+                btnCapture.classList.remove('is-analyzing');
+            }
+            if (shutterLabel) shutterLabel.textContent = 'Capture Photo & Analyze';
             if (cameraVideo) cameraVideo.play();
+        });
+    }
+
+    if (shutterLabel && btnCapture) {
+        shutterLabel.addEventListener('click', () => {
+            if (!btnCapture.disabled) btnCapture.click();
         });
     }
 
@@ -337,13 +467,20 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            if (cameraModal && cameraModal.classList.contains('open')) stopCamera();
+            else if (authModal && authModal.classList.contains('open')) closeModal(authModal);
+        }
+    });
+
     if (modalLoginForm) {
         modalLoginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             if (modalLoginAlert) modalLoginAlert.style.display = 'none';
             if (modalLoginSubmitBtn) {
                 modalLoginSubmitBtn.disabled = true;
-                modalLoginSubmitBtn.textContent = 'Memverifikasi...';
+                modalLoginSubmitBtn.textContent = 'Signing in...';
             }
 
             try {
@@ -359,22 +496,24 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                     closeModal(authModal);
                     btnScan.dataset.auth = '1';
-                    startCamera();
+                    if (window.GlossaApp && typeof window.GlossaApp.initNavbar === 'function') {
+                        await window.GlossaApp.initNavbar();
+                    }
                 } else {
                     if (modalLoginAlert) {
-                        modalLoginAlert.textContent = res.error || 'Login gagal.';
+                        modalLoginAlert.textContent = res.error || 'Sign in failed.';
                         modalLoginAlert.style.display = 'block';
                     }
                 }
             } catch (err) {
                 if (modalLoginAlert) {
-                    modalLoginAlert.textContent = 'Gagal terhubung ke server.';
+                    modalLoginAlert.textContent = 'Failed to connect to server.';
                     modalLoginAlert.style.display = 'block';
                 }
             } finally {
                 if (modalLoginSubmitBtn) {
                     modalLoginSubmitBtn.disabled = false;
-                    modalLoginSubmitBtn.textContent = 'Masuk Sekarang';
+                    modalLoginSubmitBtn.textContent = 'Sign In';
                 }
             }
         });
@@ -384,9 +523,19 @@ document.addEventListener('DOMContentLoaded', () => {
         modalRegisterForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             if (modalRegisterAlert) modalRegisterAlert.style.display = 'none';
+
+            const p1 = document.getElementById('modalRegPassword')?.value || '';
+            const p2 = document.getElementById('modalRegConfirm')?.value || '';
+            if (p1 && p2 && p1 !== p2) {
+                if (modalRegisterAlert) {
+                    modalRegisterAlert.textContent = 'Password confirmation does not match.';
+                    modalRegisterAlert.style.display = 'block';
+                }
+                return;
+            }
             if (modalRegisterSubmitBtn) {
                 modalRegisterSubmitBtn.disabled = true;
-                modalRegisterSubmitBtn.textContent = 'Mendaftarkan...';
+                modalRegisterSubmitBtn.textContent = 'Creating account...';
             }
 
             try {
@@ -402,22 +551,24 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                     closeModal(authModal);
                     btnScan.dataset.auth = '1';
-                    startCamera();
+                    if (window.GlossaApp && typeof window.GlossaApp.initNavbar === 'function') {
+                        await window.GlossaApp.initNavbar();
+                    }
                 } else {
                     if (modalRegisterAlert) {
-                        modalRegisterAlert.textContent = res.error || 'Pendaftaran gagal.';
+                        modalRegisterAlert.textContent = res.error || 'Registration failed.';
                         modalRegisterAlert.style.display = 'block';
                     }
                 }
             } catch (err) {
                 if (modalRegisterAlert) {
-                    modalRegisterAlert.textContent = 'Gagal terhubung ke server.';
+                    modalRegisterAlert.textContent = 'Failed to connect to server.';
                     modalRegisterAlert.style.display = 'block';
                 }
             } finally {
                 if (modalRegisterSubmitBtn) {
                     modalRegisterSubmitBtn.disabled = false;
-                    modalRegisterSubmitBtn.textContent = 'Daftar Akun Sekarang';
+                    modalRegisterSubmitBtn.textContent = 'Create Account';
                 }
             }
         });

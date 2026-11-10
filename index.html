@@ -1,66 +1,165 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="">
-    <title>Dashboard - glossa</title>
-    <link rel="stylesheet" href="assets/css/style.css">
+    <title>Dashboard - Glossa</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600;1,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css?v=3.4">
 </head>
 <body>
 <header class="navbar">
     <div class="nav-container">
-        <a href="index.html" class="brand">glossa</a>
+        <a href="index.html" class="brand" aria-label="Glossa">
+            <span class="brand__mark"><img src="assets/images/logo.png" alt="Glossa logo"></span>
+        </a>
         <nav class="nav-links">
             <a href="index.html" class="nav-link active">Dashboard</a>
-            <a href="login.html" class="nav-link">Masuk</a>
+            <a href="login.html" id="navLoginBtn" class="nav-link">Sign In</a>
         </nav>
     </div>
 </header>
 <main class="container">
 
-<div class="dashboard-wrapper layout-narrow layout-stack">
-    <div class="user-greeting-banner">
-        <span class="greeting-subtitle">Welcome,</span>
-        <h1 class="greeting-name">Natural Beauty</h1>
-        <p class="greeting-tagline">Lets find what suit you best</p>
+<div class="dashboard-wrapper">
+    <div class="greeting">
+        <div>
+            <p class="greeting__small greeting-subtitle">Welcome Back,</p>
+            <h1 class="greeting__name greeting-name" id="greetingName">Natural Beauty</h1>
+            <p class="greeting__sub greeting-tagline">Let's find what suits you best</p>
+        </div>
     </div>
 
-    <div class="scan-feature-card">
-        <div class="scan-icon-wrap" aria-hidden="true">
-            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
-                <circle cx="12" cy="13" r="4"></circle>
-            </svg>
+    <article class="hero-card">
+        <div class="hero-card__text">
+            <h2 class="hero-card__title">Find Your<br />Beauty Match</h2>
+            <p class="hero-card__desc">Point your camera and let Glossa AI analyze your skin characteristics.</p>
+            <div class="hero-card__actions">
+                <button type="button" class="btn btn-primary btn--scan" id="btnScanCamera" data-auth="0">
+                    Scan Now <span aria-hidden="true">&rsaquo;</span>
+                </button>
+            </div>
         </div>
-        <h2>Scan Undertone Wajah</h2>
-        <p>Gunakan kamera perangkat Anda untuk memindai wajah dan menganalisis undertone kulit secara akurat.</p>
-        
-        <button type="button" class="btn btn-primary" id="btnScanCamera" data-auth="0">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn-icon">
-                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
-                <circle cx="12" cy="13" r="4"></circle>
-            </svg>
-            Buka Scan Kamera
-        </button>
+        <span class="hero-card__spark" aria-hidden="true"></span>
+        <img src="assets/images/slide1.png" alt="Smiling woman" class="hero-card__img" width="450" height="360" />
+    </article>
+
+    <div class="dash-grid">
+        <article class="panel">
+            <h2 class="panel__title">Why Glossa?</h2>
+            <div class="feature-grid">
+                <div class="feature">
+                    <span class="feature__icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+                    </span>
+                    <h3>Skin Analysis</h3>
+                    <p>Detects skin tone &amp; undertone.</p>
+                </div>
+                <div class="feature">
+                    <span class="feature__icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="18" height="18"><path d="M10 3h4v6h-4zM8 9h8v12H8z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    </span>
+                    <h3>Makeup Match</h3>
+                    <p>Foundation, blush &amp; lipstick shade recommendations.</p>
+                </div>
+                <div class="feature">
+                    <span class="feature__icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="18" height="18"><path d="M12 7a2 2 0 1 1 2-2M12 7v2l9 7v2H3v-2l9-7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </span>
+                    <h3>Outfit Style</h3>
+                    <p>Wardrobe color palettes &amp; styling ideas.</p>
+                </div>
+            </div>
+        </article>
+
+        <article class="panel">
+            <div class="panel-header-row">
+                <h2 class="panel__title">Make Up Recommendation</h2>
+            </div>
+            <div class="inspo-grid">
+                <figure class="inspo">
+                    <img src="assets/images/slide2.jpg" alt="Foundation" loading="lazy" width="200" height="250" />
+                    <figcaption>Foundation</figcaption>
+                </figure>
+                <figure class="inspo">
+                    <img src="assets/images/slide3.jpg" alt="Blush" loading="lazy" width="200" height="250" />
+                    <figcaption>Blush</figcaption>
+                </figure>
+                <figure class="inspo">
+                    <img src="assets/images/slide1.jpg" alt="Lipstick" loading="lazy" width="200" height="250" />
+                    <figcaption>Lipstick</figcaption>
+                </figure>
+            </div>
+        </article>
     </div>
+
+    <article class="panel panel--wide">
+        <div class="panel-header-row">
+            <h2 class="panel__title">Outfit Recommendation</h2>
+        </div>
+        <h3 class="panel__section-title">Color That Suit You</h3>
+        <ul class="swatches" aria-label="Color palette inspiration">
+            <li><span class="swatch" style="background:#5C4033"></span>Brown</li>
+            <li><span class="swatch" style="background:#8C3B2E"></span>Terracotta</li>
+            <li><span class="swatch" style="background:#4A5D4E"></span>Olive</li>
+            <li><span class="swatch" style="background:#5B6F8F"></span>Blue</li>
+        </ul>
+        <h3 class="panel__section-title" style="margin-top: 24px;">Outfit Ideas</h3>
+        <div class="inspo-grid inspo-grid--3">
+            <figure class="inspo">
+                <img src="assets/images/slide2.jpg" alt="Cream Terracotta" />
+                <figcaption>Cream, Terracotta<br><small>Warm & Balanced</small></figcaption>
+            </figure>
+            <figure class="inspo">
+                <img src="assets/images/slide3.jpg" alt="Olive Beige" />
+                <figcaption>Olive, Beige<br><small>Natural & Fresh</small></figcaption>
+            </figure>
+            <figure class="inspo">
+                <img src="assets/images/slide1.jpg" alt="Brown Cream" />
+                <figcaption>Brown, Cream<br><small>Soft & Elegant</small></figcaption>
+            </figure>
+        </div>
+    </article>
+
+    <article class="panel panel--wide" id="tutorialSection">
+        <div class="panel-header-row">
+            <h2 class="panel__title">Video Tutorial</h2>
+        </div>
+        <div class="tutorial-grid">
+            <a class="tutorial" href="https://www.youtube.com/results?search_query=soft+glam+look+tutorial" target="_blank" rel="noopener noreferrer">
+                <img src="assets/images/slide2.jpg" alt="Soft Glam Look" />
+                <span class="tutorial__play" aria-hidden="true">&#9654;</span>
+                <span class="tutorial__meta"><strong>Soft Glam Look</strong><small>12.34</small></span>
+            </a>
+            <a class="tutorial" href="https://www.youtube.com/results?search_query=blush+placement+oval+face" target="_blank" rel="noopener noreferrer">
+                <img src="assets/images/slide3.jpg" alt="Blush Placement" />
+                <span class="tutorial__play" aria-hidden="true">&#9654;</span>
+                <span class="tutorial__meta"><strong>Blush Placement</strong><small>12.34</small></span>
+            </a>
+            <a class="tutorial" href="https://www.youtube.com/results?search_query=contouring+basic+tutorial" target="_blank" rel="noopener noreferrer">
+                <img src="assets/images/slide1.jpg" alt="Contouring Basic" />
+                <span class="tutorial__play" aria-hidden="true">&#9654;</span>
+                <span class="tutorial__meta"><strong>Contouring Basic</strong><small>12.34</small></span>
+            </a>
+        </div>
+    </article>
 </div>
 
 <div class="modal-overlay" id="authModal" aria-hidden="true">
     <div class="modal-card modal-sm">
-        <div class="modal-header">
-            <h3>Autentikasi Diperlukan</h3>
-            <button type="button" class="modal-close" id="closeAuthModal" aria-label="Tutup">&times;</button>
-        </div>
+        <button type="button" class="modal-close modal-close-corner" id="closeAuthModal" aria-label="Close">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
         <div class="modal-body">
-            <p class="modal-desc">Silakan masuk atau daftar akun terlebih dahulu untuk menggunakan fitur scan kamera.</p>
-            
-            <div class="auth-tabs">
-                <button type="button" class="auth-tab active" id="tabLoginBtn">Masuk</button>
-                <button type="button" class="auth-tab" id="tabRegisterBtn">Daftar Akun</button>
-            </div>
-
             <div id="modalLoginPanel">
+                <div class="auth-header-center">
+                    <div class="auth-logo"><img src="assets/images/logo.png" alt="Glossa logo"></div>
+                    <h2 class="auth-title">Glossa</h2>
+                    <p class="auth-subtitle">WELCOME BACK!</p>
+                </div>
                 <div class="alert alert-error" id="modalLoginAlert" style="display: none;"></div>
                 <form id="modalLoginForm" class="auth-form">
                     <div class="form-group">
@@ -70,28 +169,41 @@
                     <div class="form-group">
                         <div class="label-with-link">
                             <label for="modalLoginPassword">Password</label>
-                            <a href="forgot_password.html" class="forgot-link">Lupa password?</a>
+                            <a href="forgot_password.html" class="forgot-link">Forgot password?</a>
                         </div>
                         <div class="password-input-wrapper">
-                            <input type="password" id="modalLoginPassword" name="password" required placeholder="Masukkan password">
-                            <button type="button" class="btn-toggle-password" aria-label="Lihat password" title="Lihat password">
+                            <input type="password" id="modalLoginPassword" name="password" required placeholder="Enter password">
+                            <button type="button" class="btn-toggle-password" aria-label="Show password" title="Show password">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                             </button>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-block" id="modalLoginSubmitBtn">Masuk Sekarang</button>
+                    <div class="auth-remember">
+                        <label>
+                            <input type="checkbox" name="remember" id="modalRememberMe"> Remember me
+                        </label>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block" id="modalLoginSubmitBtn">Sign In</button>
                 </form>
+                <div class="auth-modal-footer">
+                    Never had an account? <a href="javascript:void(0)" class="auth-link" id="toRegisterLink" role="button" onclick="showModalRegister(event)">Register</a>
+                </div>
             </div>
 
             <div id="modalRegisterPanel" style="display: none;">
+                <div class="auth-header-center">
+                    <div class="auth-logo"><img src="assets/images/logo.png" alt="Glossa logo"></div>
+                    <h2 class="auth-title">Glossa</h2>
+                    <p class="auth-subtitle">CREATE ACCOUNT</p>
+                </div>
                 <div class="alert alert-error" id="modalRegisterAlert" style="display: none;"></div>
                 <form id="modalRegisterForm" class="auth-form">
                     <div class="form-group">
-                        <label for="modalRegName">Nama Lengkap</label>
-                        <input type="text" id="modalRegName" name="name" required placeholder="Nama Anda">
+                        <label for="modalRegName">Full Name</label>
+                        <input type="text" id="modalRegName" name="name" required placeholder="Your full name">
                     </div>
                     <div class="form-group">
-                        <label for="modalRegBirth">Tanggal Lahir</label>
+                        <label for="modalRegBirth">Date of Birth</label>
                         <input type="date" id="modalRegBirth" name="birth_date" required>
                     </div>
                     <div class="form-group">
@@ -99,25 +211,28 @@
                         <input type="email" id="modalRegEmail" name="email" required placeholder="nama@email.com">
                     </div>
                     <div class="form-group">
-                        <label for="modalRegPassword">Password (min. 6 karakter)</label>
+                        <label for="modalRegPassword">Password (min. 6 characters)</label>
                         <div class="password-input-wrapper">
-                            <input type="password" id="modalRegPassword" name="password" minlength="6" required placeholder="Buat password">
-                            <button type="button" class="btn-toggle-password" aria-label="Lihat password" title="Lihat password">
+                            <input type="password" id="modalRegPassword" name="password" minlength="6" required placeholder="Create password">
+                            <button type="button" class="btn-toggle-password" aria-label="Show password" title="Show password">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                             </button>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="modalRegConfirm">Konfirmasi Password</label>
+                        <label for="modalRegConfirm">Confirm Password</label>
                         <div class="password-input-wrapper">
-                            <input type="password" id="modalRegConfirm" name="confirm_password" minlength="6" required placeholder="Ulangi password">
-                            <button type="button" class="btn-toggle-password" aria-label="Lihat password" title="Lihat password">
+                            <input type="password" id="modalRegConfirm" name="confirm_password" minlength="6" required placeholder="Repeat password">
+                            <button type="button" class="btn-toggle-password" aria-label="Show password" title="Show password">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                             </button>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-block" id="modalRegisterSubmitBtn">Daftar Akun Sekarang</button>
+                    <button type="submit" class="btn btn-primary btn-block" id="modalRegisterSubmitBtn">Create Account</button>
                 </form>
+                <div class="auth-modal-footer">
+                    Already have an account? <a href="javascript:void(0)" class="auth-link" id="toLoginLink" role="button" onclick="showModalLogin(event)">Log in</a>
+                </div>
             </div>
         </div>
     </div>
@@ -125,17 +240,27 @@
 
 <div class="modal-overlay" id="cameraModal" aria-hidden="true">
     <div class="modal-card modal-camera-card">
-        <div class="modal-header">
-            <h3>Scan Undertone Wajah</h3>
-            <button type="button" class="modal-close" id="closeCameraModal" aria-label="Tutup">&times;</button>
-        </div>
+        <button type="button" class="modal-close camera-modal-close" id="closeCameraModal" aria-label="Close">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
         <div class="modal-body">
             <div class="camera-viewport">
                 <video id="cameraVideo" autoplay playsinline muted></video>
                 <div class="scanner-frame">
                     <div class="scanner-line"></div>
+                    <span class="scanner-corner top-left" aria-hidden="true"></span>
+                    <span class="scanner-corner top-right" aria-hidden="true"></span>
+                    <span class="scanner-corner bottom-left" aria-hidden="true"></span>
+                    <span class="scanner-corner bottom-right" aria-hidden="true"></span>
+
+                    <div class="camera-actions" id="cameraActions">
+                        <div class="shutter-wrap">
+                            <button type="button" class="shutter" id="btnCapture" aria-label="Capture Photo &amp; Analyze" title="Capture Photo &amp; Analyze"></button>
+                            <span class="shutter-caption" id="shutterLabel">Capture Photo &amp; Analyze</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="camera-status" id="cameraStatus">Menghubungkan ke kamera...</div>
+                <div class="camera-status" id="cameraStatus">Connecting to camera...</div>
                 <div class="camera-flash" id="cameraFlash"></div>
 
                 <div class="analyzing-overlay" id="analyzingOverlay" style="display: none;">
@@ -150,24 +275,59 @@
                     </div>
                     <div class="analyzing-badge">
                         <span class="analyzing-spinner"></span>
-                        <span id="analyzingText" class="analyzing-text">Menganalisis dengan AI...</span>
+                        <span id="analyzingText" class="analyzing-text">Analyzing with AI...</span>
                     </div>
                 </div>
-            </div>
-            <div class="camera-actions" id="cameraActions">
-                <button type="button" class="btn btn-primary btn-block" id="btnCapture">Ambil Gambar & Analisis</button>
             </div>
 
             <div id="scanResultBox" class="scan-result-card" style="display: none;">
                 <div class="scan-result-header">
                     <span class="undertone-badge" id="resUndertoneBadge">Warm Undertone</span>
                     <span class="shape-badge" id="resFaceShapeBadge" style="display: none;">Oval Face</span>
-                    <span class="accuracy-pill" id="resAccuracyBadge">96% Akurasi</span>
+                    <span class="accuracy-pill" id="resAccuracyBadge">96% Accuracy</span>
                 </div>
                 <p id="resRecommendation" class="scan-result-desc"></p>
+
+                <!-- Rekomendasi Hasil Scan: Undertone & Face Shape -->
+                <div id="resRecGrid" class="scan-rec-grid" style="display: none;">
+                    <div class="scan-rec-card">
+                        <div class="scan-rec-card-header">
+                            <span class="rec-icon">🎨</span>
+                            <strong id="resRecUndertoneTitle">Rekomendasi Undertone</strong>
+                        </div>
+                        <div class="scan-rec-row">
+                            <span class="rec-tag">Pakaian:</span>
+                            <span id="resRecClothing" class="rec-text">-</span>
+                        </div>
+                        <div class="scan-rec-row">
+                            <span class="rec-tag">Lipstik:</span>
+                            <span id="resRecLipstick" class="rec-text">-</span>
+                        </div>
+                        <div class="scan-rec-row">
+                            <span class="rec-tag">Perhiasan:</span>
+                            <span id="resRecJewelry" class="rec-text">-</span>
+                        </div>
+                    </div>
+
+                    <div class="scan-rec-card" id="resRecFaceShapeCard" style="display: none;">
+                        <div class="scan-rec-card-header">
+                            <span class="rec-icon">👓</span>
+                            <strong id="resRecFaceShapeTitle">Rekomendasi Bentuk Wajah</strong>
+                        </div>
+                        <div class="scan-rec-row">
+                            <span class="rec-tag">Kacamata:</span>
+                            <span id="resRecEyewear" class="rec-text">-</span>
+                        </div>
+                        <div class="scan-rec-row">
+                            <span class="rec-tag">Rambut:</span>
+                            <span id="resRecHair" class="rec-text">-</span>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="scan-result-footer actions-row actions-center">
                     <a href="profile.html" class="btn btn-primary btn-sm">Lihat Detail di Profil</a>
-                    <button type="button" class="btn btn-secondary btn-sm" id="btnScanAgain">Scan Ulang</button>
+                    <button type="button" class="btn btn-secondary btn-sm" id="btnScanAgain">Scan Lagi</button>
                 </div>
             </div>
         </div>
@@ -176,8 +336,54 @@
 
 </main>
 
-<script src="assets/js/app.js"></script>
-<script src="assets/js/main.js"></script>
+<script>
+function showModalRegister(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    var modal = document.getElementById('authModal');
+    var login = document.getElementById('modalLoginPanel');
+    var reg = document.getElementById('modalRegisterPanel');
+    if (login) login.style.display = 'none';
+    if (reg) reg.style.display = 'block';
+    var a1 = document.getElementById('modalLoginAlert');
+    var a2 = document.getElementById('modalRegisterAlert');
+    if (a1) a1.style.display = 'none';
+    if (a2) a2.style.display = 'none';
+    if (modal) {
+        modal.classList.add('open');
+        modal.setAttribute('aria-hidden', 'false');
+    }
+}
+function showModalLogin(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    var modal = document.getElementById('authModal');
+    var login = document.getElementById('modalLoginPanel');
+    var reg = document.getElementById('modalRegisterPanel');
+    if (reg) reg.style.display = 'none';
+    if (login) login.style.display = 'block';
+    var a1 = document.getElementById('modalLoginAlert');
+    var a2 = document.getElementById('modalRegisterAlert');
+    if (a1) a1.style.display = 'none';
+    if (a2) a2.style.display = 'none';
+    if (modal) {
+        modal.classList.add('open');
+        modal.setAttribute('aria-hidden', 'false');
+    }
+}
+window.showModalRegister = showModalRegister;
+window.showModalLogin = showModalLogin;
+
+document.addEventListener('click', function(e) {
+    var navLogin = e.target.closest && e.target.closest('.nav-links a[href*="login"], #navLoginBtn');
+    if (!navLogin) return;
+    var modal = document.getElementById('authModal');
+    if (modal) {
+        e.preventDefault();
+        showModalLogin(e);
+    }
+});
+</script>
+<script src="assets/js/app.js?v=2.5"></script>
+<script src="assets/js/main.js?v=2.2"></script>
 <script>
 document.addEventListener('DOMContentLoaded', async () => {
     const hasOnboarded = localStorage.getItem('glossa_onboarded') || document.cookie.includes('glossa_onboarded=1');
@@ -189,11 +395,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     const params = new URLSearchParams(window.location.search);
-    if (params.get('action') === 'scan' && user) {
-        setTimeout(() => {
-            document.getElementById('btnScanCamera')?.click();
-        }, 300);
+    if (params.get('modal') === 'register') {
+        showModalRegister();
+    } else if (params.get('modal') === 'login') {
+        showModalLogin();
     }
+// Auto-scan after login/register removed per user request
 });
 </script>
 </body>

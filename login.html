@@ -1,18 +1,23 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Masuk ke glossa</title>
-    <link rel="stylesheet" href="assets/css/style.css">
+    <title>Sign In - Glossa</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600;1,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css?v=2.9">
 </head>
 <body>
 <header class="navbar">
     <div class="nav-container">
-        <a href="index.html" class="brand">glossa</a>
+        <a href="index.html" class="brand" aria-label="Glossa">
+            <span class="brand__mark"><img src="assets/images/logo.png" alt="Glossa logo"></span>
+        </a>
         <nav class="nav-links">
             <a href="index.html" class="nav-link">Dashboard</a>
-            <a href="login.html" class="nav-link active">Masuk</a>
+            <a href="login.html" class="nav-link active">Sign In</a>
         </nav>
     </div>
 </header>
@@ -20,15 +25,15 @@
 
 <div class="auth-card">
     <div class="auth-tabs">
-        <a href="login.html" class="auth-tab active">Masuk</a>
-        <a href="register.html" class="auth-tab">Daftar Akun</a>
+        <a href="login.html" class="auth-tab active">Sign In</a>
+        <a href="index.html?modal=register" class="auth-tab">Create Account</a>
     </div>
 
-    <h2>Masuk ke glossa</h2>
-    <p class="subtitle">Silakan masukkan email dan password Anda</p>
+    <h2>Sign In to Glossa</h2>
+    <p class="subtitle">Please enter your email and password</p>
 
     <div id="authAlertInfo" class="alert alert-info" style="display: none;">
-        Autentikasi Diperlukan: Silakan masuk atau daftar akun terlebih dahulu untuk menggunakan fitur scan kamera.
+        Authentication Required: Please sign in or create an account to use the camera scan feature.
     </div>
 
     <div id="authAlertSuccess" class="alert alert-success" style="display: none;"></div>
@@ -43,27 +48,33 @@
         <div class="form-group">
             <div class="label-with-link">
                 <label for="password">Password</label>
-                <a href="forgot_password.html" class="forgot-link">Lupa password?</a>
+                <a href="forgot_password.html" class="forgot-link">Forgot password?</a>
             </div>
             <div class="password-input-wrapper">
-                <input type="password" id="password" name="password" required placeholder="Masukkan password Anda">
+                <input type="password" id="password" name="password" required placeholder="Enter your password">
                 <button type="button" class="btn-toggle-password" aria-label="Lihat password" title="Lihat password">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                 </button>
             </div>
         </div>
 
-        <button type="submit" id="btnSubmitLogin" class="btn btn-primary btn-block">Masuk</button>
+        <div class="auth-remember">
+            <label>
+                <input type="checkbox" name="remember" id="rememberMe"> Remember me
+            </label>
+        </div>
+
+        <button type="submit" id="btnSubmitLogin" class="btn btn-primary btn-block">Sign In</button>
     </form>
 
     <div class="auth-footer">
-        Belum punya akun? <a href="register.html">Daftar sekarang</a>
+        Never had account? <a href="index.html?modal=register">Register</a>
     </div>
 </div>
 
 </main>
 
-<script src="assets/js/app.js"></script>
+<script src="assets/js/app.js?v=2.5"></script>
 <script>
 document.addEventListener('DOMContentLoaded', async () => {
     const params = new URLSearchParams(window.location.search);
@@ -99,7 +110,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         e.preventDefault();
         alertError.style.display = 'none';
         btnSubmit.disabled = true;
-        btnSubmit.textContent = 'Memverifikasi...';
+        btnSubmit.textContent = 'Signing in...';
 
         const email = document.getElementById('email').value.trim();
         const password = document.getElementById('password').value;
@@ -112,18 +123,18 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
             const data = await res.json();
             if (data.success) {
-                const target = params.get('redirect') === 'scan' ? 'index.html?action=scan' : 'index.html';
+                const target = 'index.html';
                 window.location.href = target;
             } else {
                 alertError.textContent = data.error || 'Email atau password salah.';
                 alertError.style.display = 'block';
             }
         } catch (err) {
-            alertError.textContent = 'Gagal menghubungi server. Silakan coba lagi.';
+            alertError.textContent = 'Failed to connect to server. Please try again.';
             alertError.style.display = 'block';
         } finally {
             btnSubmit.disabled = false;
-            btnSubmit.textContent = 'Masuk';
+            btnSubmit.textContent = 'Sign In';
         }
     });
 });
