@@ -174,17 +174,9 @@ if (!empty($undertoneModel) && empty($undertone)) {
     exit;
 }
 
-if (!empty($faceShapeModel) && empty($faceShape)) {
-    http_response_code(422);
-    $errMsg = 'AI Roboflow tidak dapat mendeteksi bentuk wajah. Pastikan seluruh bagian wajah dan rahang berada di dalam bingkai.';
-    if (!empty($rfFaceShapeError)) {
-        $errMsg = 'Roboflow Face Shape (' . $rfFaceShapeError . '). Silakan train model di dashboard Roboflow terlebih dahulu.';
-    }
-    echo json_encode([
-        'success' => false,
-        'error' => $errMsg
-    ]);
-    exit;
+// Jika face shape belum di-train atau tidak terdeteksi, jangan batalkan scan (tetap tampilkan undertone)
+if (!empty($faceShapeModel) && empty($faceShape) && !empty($rfFaceShapeError)) {
+    error_log('Roboflow Face Shape notice: ' . $rfFaceShapeError);
 }
 
 if (empty($undertone)) {
