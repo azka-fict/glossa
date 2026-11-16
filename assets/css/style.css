@@ -1428,7 +1428,7 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
 }
 
 .hero-card--tips {
-    margin-top: 24px;
+    margin-top: 0;
     margin-bottom: 24px;
 }
 .hero-card--tips .hero-card__desc {
@@ -1526,32 +1526,24 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
 }
 .see-more-link {
     font-family: var(--font-sans);
-    font-size: 13px;
+    font-size: 13.5px;
     font-weight: 600;
     color: var(--primary, #a21e1e);
     text-decoration: none;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 6px 14px;
+    gap: 4px;
+    padding: 6px 12px;
     border-radius: 999px;
-    background: rgba(162, 30, 30, 0.05);
-    border: 1px solid rgba(162, 30, 30, 0.16);
+    background: transparent;
+    border: none;
     transition: all 0.2s ease;
     cursor: pointer;
 }
 .see-more-link:hover {
-    background: var(--primary, #a21e1e);
-    color: #ffffff;
-    border-color: var(--primary, #a21e1e);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 10px rgba(162, 30, 30, 0.15);
-}
-.see-more-link svg {
-    transition: transform 0.2s ease;
-}
-.see-more-link:hover svg {
-    transform: translateX(3px);
+    color: var(--primary-hover, #8e1818);
+    background: #fbeee9;
+    transform: translateX(2px);
 }
 
 .tips-modal-body {
