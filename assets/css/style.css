@@ -1549,8 +1549,9 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: space-between;
     text-align: center;
-    gap: 10px;
+    aspect-ratio: 4 / 5;
     transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
@@ -1734,6 +1735,10 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
     .inspo-grid,
     .tutorial-grid {
         grid-template-columns: 1fr;
+    }
+    .color-inspo-card {
+        aspect-ratio: auto;
+        padding: 16px 12px;
     }
     .modal-camera-card {
         padding: 0 !important;
