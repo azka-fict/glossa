@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600;1,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/style.css?v=3.8">
+    <link rel="stylesheet" href="assets/css/style.css?v=3.9">
 </head>
 <body>
 <header class="navbar">
@@ -112,31 +112,18 @@
         </article>
     </div>
 
-    <article class="panel panel--wide" id="beautyTipsSection">
-        <div class="panel-header-row">
-            <h2 class="panel__title">Beauty Tips</h2>
-            <a href="javascript:void(0)" class="see-more-link" id="btnSeeMoreTips" role="button" aria-haspopup="dialog" aria-label="See More Beauty Tips">
-                See More
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                    <polyline points="12 5 19 12 12 19"></polyline>
-                </svg>
-            </a>
+    <article class="hero-card hero-card--tips" id="beautyTipsSection">
+        <div class="hero-card__text">
+            <h2 class="hero-card__title">Glossa<br />Beauty Tips</h2>
+            <p class="hero-card__desc">Discover expert skincare prep, shade matching, and makeup application secrets tailored for your skin.</p>
+            <div class="hero-card__actions">
+                <button type="button" class="btn btn-primary btn--scan" id="btnSeeMoreTips" aria-haspopup="dialog" aria-label="See More Beauty Tips">
+                    See More <span aria-hidden="true">&rsaquo;</span>
+                </button>
+            </div>
         </div>
-        <div class="inspo-grid inspo-grid--3">
-            <figure class="inspo">
-                <img src="assets/images/tip_skinprep.jpg" alt="Skin Preparation" loading="lazy" width="400" height="500" />
-                <figcaption>Skin Preparation<br><small>Hydrate &amp; Prime for Flawless Base</small></figcaption>
-            </figure>
-            <figure class="inspo">
-                <img src="assets/images/tip_shadematch.jpg" alt="Shade Matching" loading="lazy" width="400" height="500" />
-                <figcaption>Shade Matching<br><small>Match Along Jawline in Daylight</small></figcaption>
-            </figure>
-            <figure class="inspo">
-                <img src="assets/images/tip_blushglow.jpg" alt="Blush &amp; Glow" loading="lazy" width="400" height="500" />
-                <figcaption>Blush &amp; Glow<br><small>Lift Cheekbones &amp; Enhance Face Shape</small></figcaption>
-            </figure>
-        </div>
+        <span class="hero-card__spark" aria-hidden="true"></span>
+        <img src="assets/images/brushsetbg.png" alt="Makeup Brushes and Swatches" class="hero-card__img" width="527" height="365" />
     </article>
 
     <article class="panel panel--wide" id="tutorialSection">

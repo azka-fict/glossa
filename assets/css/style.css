@@ -1427,6 +1427,17 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
     display: block;
 }
 
+.hero-card--tips {
+    margin-top: 24px;
+    margin-bottom: 24px;
+}
+.hero-card--tips .hero-card__img {
+    object-position: right bottom;
+    padding-right: 20px;
+    max-height: 215px;
+    filter: drop-shadow(0 8px 16px rgba(162, 30, 30, 0.08));
+}
+
 .btn--scan {
     background: #a9281c !important;
     padding: 9px 20px !important;
