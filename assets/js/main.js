@@ -457,7 +457,21 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    [authModal, cameraModal].forEach(modal => {
+    const btnSeeMoreTips = document.getElementById('btnSeeMoreTips');
+    const beautyTipsModal = document.getElementById('beautyTipsModal');
+    const closeBeautyTipsModal = document.getElementById('closeBeautyTipsModal');
+
+    if (btnSeeMoreTips && beautyTipsModal) {
+        btnSeeMoreTips.addEventListener('click', (e) => {
+            e.preventDefault();
+            openModal(beautyTipsModal);
+        });
+    }
+    if (closeBeautyTipsModal && beautyTipsModal) {
+        closeBeautyTipsModal.addEventListener('click', () => closeModal(beautyTipsModal));
+    }
+
+    [authModal, cameraModal, beautyTipsModal].forEach(modal => {
         if (!modal) return;
         modal.addEventListener('click', (e) => {
             if (e.target === modal) {
@@ -471,6 +485,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.key === 'Escape') {
             if (cameraModal && cameraModal.classList.contains('open')) stopCamera();
             else if (authModal && authModal.classList.contains('open')) closeModal(authModal);
+            else if (beautyTipsModal && beautyTipsModal.classList.contains('open')) closeModal(beautyTipsModal);
         }
     });
 
